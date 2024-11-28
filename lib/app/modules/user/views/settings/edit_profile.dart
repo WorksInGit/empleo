@@ -1,282 +1,155 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:empleo/app/modules/user/controllers/edit_profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-
-class EditProfile extends StatefulWidget {
-  const EditProfile({super.key});
-
-  @override
-  State<EditProfile> createState() => _EditProfileState();
-}
-
-class _EditProfileState extends State<EditProfile> {
-  File? _image;
 
 
-  Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+class EditProfile extends StatelessWidget {
+  final String uid; // Pass UID of the current user
+  EditProfile({Key? key, required this.uid}) : super(key: key);
 
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path); // Store the picked image in _image
-      });
-    }
-  }
+  final controller = Get.put(EditProfileController());
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: GestureDetector(
-        onTap: () {
-          return FocusScope.of(context).unfocus();
-        },
-        child: Scaffold(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          centerTitle: true,
+          automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
-          body: SingleChildScrollView(
-            child: Stack(
-              children: [
-                Column(
-                  children: [
-                   
-                    Row(
-                      children: [
-                        SizedBox(width: 10.w),
-                        IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(
-                            Iconsax.arrow_circle_left,
-                            size: 30.sp,
-                          ),
-                        ),
-                        SizedBox(width: 90.w),
-                        Text(
-                          'Edit Profile',
-                          style: GoogleFonts.poppins(
-                              fontSize: 20.sp, fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                    ),
-        SizedBox(
-          height: 20.h,
+          elevation: 0,
+          title: Text(
+            'Edit Profile',
+            style: GoogleFonts.poppins(fontSize: 18.sp, fontWeight: FontWeight.w500),
+          ),
         ),
-                    CircleAvatar(
-                      radius: 60.h, // Changed .r to .h for responsive radius
-                      backgroundImage: _image != null
-                          ? FileImage(_image!) // Show the picked image
-                          : AssetImage('assets/images/john.png') as ImageProvider,
-                    ),
-                    SizedBox(height: 10.h),
-                    Row(
+        body: FutureBuilder<DocumentSnapshot>(
+          future: FirebaseFirestore.instance.collection('users').doc(uid).get(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator(color: HexColor('4CA6A8'),));
+            }
+
+            if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
+              return Center(child: Text('Failed to load profile data'));
+            }
+
+            // Load existing data into controllers
+            final userData = snapshot.data!;
+            controller.nameController.text = userData['name'] ?? '';
+            controller.emailController.text = userData['email'] ?? '';
+            controller.qualificationController.text = userData['qualification'] ?? '';
+            controller.experienceController.text = userData['experience'] ?? '';
+            controller.skillsController.text = (userData['skills'] as List).join(', ');
+            controller.profileImageUrl.value = userData['photoUrl'] ?? ''; // Set the current profile URL
+
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 30.h),
+                    Stack(
                       children: [
-                        SizedBox(width: 25.w),
-                        Text(
-                          'Name',
-                          style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30.w), // Changed .r to .w for width
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          label: Text(
-                            'John',
-                            style: GoogleFonts.poppins(fontWeight: FontWeight.w200),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: HexColor('4CA6A8')),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10.h),
-                    Row(
-                      children: [
-                        SizedBox(width: 25.w),
-                        Text(
-                          'Email',
-                          style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30.w), // Changed .r to .w for width
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          label: Text(
-                            'john123@gmail.com',
-                            style: GoogleFonts.poppins(fontWeight: FontWeight.w200),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: HexColor('4CA6A8')),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10.h),
-                    Row(
-                      children: [
-                        SizedBox(width: 25.w),
-                        Text(
-                          'Qualification',
-                          style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30.w), // Changed .r to .w for width
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          label: Text(
-                            'BCA',
-                            style: GoogleFonts.poppins(fontWeight: FontWeight.w200),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: HexColor('4CA6A8')),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10.h),
-                    Row(
-                      children: [
-                        SizedBox(width: 25.w),
-                        Text(
-                          'Experience',
-                          style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30.w), // Changed .r to .w for width
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          label: Text(
-                            '3 Years',
-                            style: GoogleFonts.poppins(fontWeight: FontWeight.w200),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: HexColor('4CA6A8')),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10.h),
-                    Row(
-                      children: [
-                        SizedBox(width: 25.w),
-                        Text(
-                          'Skills',
-                          style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30.w), // Changed .r to .w for width
-                      child: Container(
-                        width: 350.w, // Changed .r to .w for width
-                        height: 60.h, // Changed .r to .h for height
-                        decoration: BoxDecoration(
-                          border: Border.all(color: HexColor('4CA6A8')),
-                        ),
-                        child: Stack(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 100.w, // Changed .r to .w for width
-                                    height: 40.h, // Changed .r to .h for height
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey,
-                                      borderRadius: BorderRadius.circular(15.h), // Changed .r to .h for radius
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'UI/UX Designing',
-                                        style: GoogleFonts.poppins(fontSize: 11.sp),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 10.w),
-                                  Container(
-                                    width: 100.w, // Changed .r to .w for width
-                                    height: 40.h, // Changed .r to .h for height
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey,
-                                      borderRadius: BorderRadius.circular(15.h), // Changed .r to .h for radius
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'UI/UX Designing',
-                                        style: GoogleFonts.poppins(fontSize: 11.sp),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 85.w),
-                              child: Icon(Iconsax.close_square5),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 195.w),
-                              child: Icon(Iconsax.close_square5),
-                            ),
+                            Obx(() {
+                              return CircleAvatar(
+                                radius: 60.r, // Adjusted with ScreenUtil
+                                backgroundImage: controller.profileImageUrl.value.isNotEmpty
+                                    ? NetworkImage(controller.profileImageUrl.value)
+                                    : AssetImage('assets/images/john.png') as ImageProvider,
+                                child: controller.isUploading.value
+                                    ? CircularProgressIndicator(color: HexColor('4CA6A8'),) // Show progress indicator if uploading
+                                    : null,
+                              );
+                            }),
                           ],
                         ),
-                      ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 195.w, top: 80.h),
+                          child: IconButton(
+                            onPressed: () {
+                              controller.pickImage(); // Pick image when icon is pressed
+                            },
+                            icon: Icon(Iconsax.edit5),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 20.h),
-                    Container(
-                      width: 200.w, // Changed .r to .w for width
-                      height: 40.h, // Changed .r to .h for height
-                      decoration: BoxDecoration(
-                        color: HexColor('4CA6A8'),
-                        borderRadius: BorderRadius.circular(15.h), // Changed .r to .h for radius
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Save',
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                    buildLabel('Name'),
+                    buildTextField(controller.nameController, 'Enter your name'),
+                    SizedBox(height: 20.h),
+                    buildLabel('Email'),
+                    buildTextField(controller.emailController, 'Enter your email'),
+                    SizedBox(height: 20.h),
+                    buildLabel('Qualification'),
+                    buildTextField(controller.qualificationController, 'Enter your qualification'),
+                    SizedBox(height: 20.h),
+                    buildLabel('Experience'),
+                    buildTextField(controller.experienceController, 'Enter your experience'),
+                    SizedBox(height: 20.h),
+                    buildLabel('Skills'),
+                    buildTextField(controller.skillsController, 'Enter skills (comma-separated)'),
+                    SizedBox(height: 30.h),
+                    Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: HexColor('4CA6A8'),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r),
                           ),
+                          padding: EdgeInsets.symmetric(horizontal: 50.w, vertical: 15.h),
+                        ),
+                        onPressed: () {
+                          controller.updateProfile(uid); // Update profile with new data
+                        },
+                        child: Text(
+                          'Save Changes',
+                          style: GoogleFonts.poppins(fontSize: 16.sp, color: Colors.white),
                         ),
                       ),
                     ),
-                    SizedBox(height: 20.h),
+                    SizedBox(height: 30.h),
                   ],
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 210.w, top: 150.h),
-                  child: IconButton(
-                    onPressed: _pickImage, // Trigger image picking
-                    icon: Icon(
-                      Iconsax.camera5,
-                      color: Colors.black,
-                      size: 45.sp,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget buildLabel(String text) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 5.h),
+      child: Text(
+        text,
+        style: GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w400),
+      ),
+    );
+  }
+
+  Widget buildTextField(TextEditingController controller, String hint) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        hintText: hint,
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: HexColor('4CA6A8')),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: HexColor('4CA6A8'), width: 2.w),
         ),
       ),
     );

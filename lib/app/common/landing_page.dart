@@ -1,12 +1,14 @@
 import 'package:empleo/app/common/selection_page.dart';
+import 'package:empleo/app/modules/company/views/company_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class LandingPage extends StatelessWidget {
-  const LandingPage({super.key});
+   const LandingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +45,8 @@ class LandingPage extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 Get.to(() => SelectionPage());
+                
+
               },
               child: Container(
                 width: 300.w,
