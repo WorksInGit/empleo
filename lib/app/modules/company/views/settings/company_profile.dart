@@ -1,6 +1,4 @@
 import 'package:empleo/app/modules/company/views/settings/edit_company_profile.dart';
-import 'package:empleo/app/modules/user/views/settings/edit_profile.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';

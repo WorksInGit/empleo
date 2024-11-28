@@ -1,4 +1,3 @@
-import 'package:empleo/app/common/selection_page.dart';
 import 'package:empleo/app/modules/company/controllers/point_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

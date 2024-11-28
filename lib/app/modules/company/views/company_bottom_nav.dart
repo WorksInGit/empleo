@@ -1,15 +1,11 @@
-import 'package:empleo/app/common/landing_page.dart';
 import 'package:empleo/app/modules/company/views/home/company_home.dart';
 import 'package:empleo/app/modules/company/views/posts/company_posts.dart';
 import 'package:empleo/app/modules/company/views/settings/company_settings.dart';
 import 'package:empleo/app/modules/user/controllers/nav_controller.dart';
-import 'package:empleo/app/modules/user/views/application/application.dart';
 import 'package:empleo/app/modules/user/views/home/home_page.dart';
-import 'package:empleo/app/modules/user/views/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:iconsax/iconsax.dart';
 

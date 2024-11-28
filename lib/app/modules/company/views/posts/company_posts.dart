@@ -1,16 +1,10 @@
-import 'dart:ffi';
-
 import 'package:empleo/app/modules/company/controllers/button_controller.dart';
 import 'package:empleo/app/modules/company/views/posts/add_posts.dart';
 import 'package:empleo/app/modules/company/views/posts/company_applications.dart';
 import 'package:empleo/app/modules/company/views/posts/company_shortlisted.dart';
-import 'package:empleo/app/modules/user/controllers/nav_controller.dart';
-import 'package:empleo/app/modules/user/views/about_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';

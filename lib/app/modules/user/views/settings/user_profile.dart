@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:empleo/app/modules/user/controllers/edit_profile_controller.dart';
 import 'package:empleo/app/modules/user/views/settings/edit_profile.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -9,7 +8,6 @@ import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class UserProfile extends StatefulWidget {
    UserProfile({super.key});
@@ -79,7 +77,7 @@ class _UserProfileState extends State<UserProfile> {
                       SizedBox(width: 30.w), // Adjusted with ScreenUtil
                       IconButton(
                         onPressed: () {
-                          Get.to(() => EditProfile(uid: user!.uid ?? ''));
+                          Get.to(() => EditProfile(uid: user!.uid));
                         },
                         icon: Icon(
                           Iconsax.edit5,

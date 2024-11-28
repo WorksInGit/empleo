@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:empleo/app/modules/user/services/auth_service.dart';
 import 'package:empleo/app/modules/user/views/about_page.dart';
 import 'package:empleo/app/modules/user/views/user_bottom_nav.dart';
-import 'package:empleo/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

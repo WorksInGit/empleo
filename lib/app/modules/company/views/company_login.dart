@@ -1,7 +1,5 @@
 import 'package:empleo/app/modules/company/views/company_register.dart';
-import 'package:empleo/app/modules/user/views/about_page.dart';
 import 'package:empleo/app/modules/user/views/user_bottom_nav.dart';
-import 'package:empleo/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';

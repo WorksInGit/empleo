@@ -1,10 +1,8 @@
 import 'package:empleo/app/modules/company/controllers/register_controller.dart';
 import 'package:empleo/app/modules/company/views/verification_timer.dart';
-import 'package:empleo/app/modules/user/views/user_bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
