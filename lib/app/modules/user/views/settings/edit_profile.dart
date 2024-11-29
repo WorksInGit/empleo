@@ -14,12 +14,14 @@ class EditProfile extends StatelessWidget {
 
   final controller = Get.put(EditProfileController());
 
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          surfaceTintColor: HexColor('4CA6A8'),
           centerTitle: true,
           automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
@@ -37,17 +39,18 @@ class EditProfile extends StatelessWidget {
             }
 
             if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
-              return Center(child: Text('Failed to load profile data'));
+              return const Center(child: Text('Failed to load profile data'));
             }
 
-            // Load existing data into controllers
             final userData = snapshot.data!;
             controller.nameController.text = userData['name'] ?? '';
             controller.emailController.text = userData['email'] ?? '';
             controller.qualificationController.text = userData['qualification'] ?? '';
             controller.experienceController.text = userData['experience'] ?? '';
             controller.skillsController.text = (userData['skills'] as List).join(', ');
-            controller.profileImageUrl.value = userData['photoUrl'] ?? ''; // Set the current profile URL
+            controller.phoneController.text = userData['phone'].toString();
+            controller.locationController.text = userData['location'] ?? '';
+            controller.profileImageUrl.value = userData['photoUrl'] ?? ''; 
 
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -66,7 +69,7 @@ class EditProfile extends StatelessWidget {
                                 radius: 60.r, // Adjusted with ScreenUtil
                                 backgroundImage: controller.profileImageUrl.value.isNotEmpty
                                     ? NetworkImage(controller.profileImageUrl.value)
-                                    : AssetImage('assets/images/john.png') as ImageProvider,
+                                    : AssetImage('assets/icons/person.png') as ImageProvider,
                                 child: controller.isUploading.value
                                     ? CircularProgressIndicator(color: HexColor('4CA6A8'),) // Show progress indicator if uploading
                                     : null,
@@ -100,7 +103,39 @@ class EditProfile extends StatelessWidget {
                     SizedBox(height: 20.h),
                     buildLabel('Skills'),
                     buildTextField(controller.skillsController, 'Enter skills (comma-separated)'),
-                    SizedBox(height: 30.h),
+                    SizedBox(height: 20.h),
+                    
+                  // Location
+
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Contact Number',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      TextFormField(
+                        controller: controller.phoneController,
+                        onChanged: (value) => controller.phoneController.text = value,
+                        obscureText: false,
+                        keyboardType: TextInputType.phone,
+                        maxLength: 10,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Iconsax.mobile4),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: HexColor('4CA6A8'))),
+                        ),
+                      ),
+                    ],
+                  ),
+                  buildLabel('Location'),
+                  buildTextField(controller.locationController, 'Enter your location'),
+                  SizedBox(height: 30.h),
                     Center(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(

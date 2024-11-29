@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:empleo/app/modules/user/services/auth_service.dart';
 import 'package:empleo/app/modules/user/views/settings/about_app.dart';
 import 'package:empleo/app/modules/user/views/settings/user_faq.dart';
 import 'package:empleo/app/common/user_feedback.dart';
 import 'package:empleo/app/modules/user/views/settings/user_profile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,8 +12,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
-
+   SettingsPage({super.key});
+final AuthService authService = AuthService();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -148,25 +151,38 @@ class SettingsPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 20.h), 
-                      Container(
-                        width: 250.w, 
-                        height: 50.h, 
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15.h)), 
-                        child: Row(
-                          children: [
-                            SizedBox(width: 10.w), 
-                            Icon(
-                              Iconsax.logout5,
-                              size: 40.sp, 
-                            ),
-                            SizedBox(width: 10.w), 
-                            Text(
-                              'LogOut',
-                              style: GoogleFonts.poppins(),
-                            )
-                          ],
+                      GestureDetector(
+                        onTap: () async {
+                           final user = FirebaseAuth.instance.currentUser;
+                    if (user != null) {
+                      await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user.uid)
+                          .delete();
+                      print("User data cleared from Firestore.");
+                    }
+                    authService.signOut();
+                        },
+                        child: Container(
+                          width: 250.w, 
+                          height: 50.h, 
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15.h)), 
+                          child: Row(
+                            children: [
+                              SizedBox(width: 10.w), 
+                              Icon(
+                                Iconsax.logout5,
+                                size: 40.sp, 
+                              ),
+                              SizedBox(width: 10.w), 
+                              Text(
+                                'LogOut',
+                                style: GoogleFonts.poppins(),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ],
