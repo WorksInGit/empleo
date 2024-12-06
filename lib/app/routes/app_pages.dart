@@ -10,6 +10,7 @@ import 'package:empleo/app/modules/user/views/user_bottom_nav.dart';
 import 'package:empleo/app/modules/user/views/home/apply_page.dart';
 import 'package:empleo/app/modules/user/views/home/job_apply.dart';
 import 'package:empleo/app/modules/user/views/user_login.dart';
+import 'package:empleo/app/modules/user/views/user_signup.dart';
 import 'package:empleo/app/routes/app_routes.dart';
 import 'package:empleo/app/common/landing_page.dart';
 import 'package:empleo/app/common/selection_page.dart';
@@ -70,5 +71,13 @@ class AppPages {
     GetPage(name: Routes.application, page: () => CompanyApplications()),
     GetPage(name: Routes.applicantProfile, page: () => ApplicantProfile()),
     GetPage(name: Routes.feedback, page: () => UserFeedback()),
+    GetPage(
+      name: Routes.signUp,
+      page: () => UserSignUp(),
+    ),
+    GetPage(
+      name: Routes.userLogin,
+      page: () => UserLogin(),
+    ),
   ];
 }

@@ -1,21 +1,20 @@
 import 'package:empleo/app/modules/company/controllers/register_controller.dart';
-import 'package:empleo/app/modules/company/views/verification_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:iconsax/iconsax.dart';
 
 class CompanyRegister extends StatelessWidget {
-   CompanyRegister({super.key});
+  CompanyRegister({super.key});
   final RegisterController controller = Get.put(RegisterController());
+
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        return FocusScope.of(context).unfocus();
-      },
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -37,109 +36,125 @@ class CompanyRegister extends StatelessWidget {
         body: Padding(
           padding: EdgeInsets.all(16.w),
           child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildTextField(
-                  label: 'Company Name',
-                  hintText: 'Enter your company name',
-                ),
-                SizedBox(height: 16.h),
-                _buildTextField(
-                  label: 'Email',
-                  hintText: 'Enter your email',
-                ),
-                SizedBox(height: 16.h),
-                _buildTextField(
-                  label: 'Password',
-                  hintText: 'Enter your password',
-                  obscureText: true,
-                ),
-                SizedBox(height: 16.h),
-                Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Contact Number',
-            style: TextStyle(
-
-              fontSize: 14.sp,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 8.h),
-        TextField(
-        obscureText: false,
-      keyboardType: TextInputType.phone,
-      maxLength: 10,
-        decoration: InputDecoration(
-          
-      hintText: 'Phone Number',
-      border: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: Colors.red, // Change this to your desired color
-          width: 2.0, // You can also change the width of the border
-        ),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: Colors.blue, // Color when the TextField is focused
-          width: 2.0,
-        ),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: HexColor('4CA6A8'), // Color when the TextField is enabled but not focused
-          width: 2.0,
-        ),
-      ),
-      prefixIcon: Icon(Iconsax.mobile4),
-        ),
-      ),
-      
-        ],
-      ),
-                SizedBox(height: 16.h),
-                _buildTextField(
-                  label: 'About',
-                  hintText: 'Write about your company',
-                  maxLines: 3,
-                ),
-                SizedBox(height: 16.h),
-                _buildDropdownField(
-                  label: 'Industry',
-                  hintText: 'Select your sector',
-                ),
-                SizedBox(height: 16.h),
-                _buildTextField(
-                  label: 'Location',
-                  hintText: 'Eg: Texas, America',
-                ),
-                SizedBox(height: 24.h),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: HexColor('4CA6A8'),
-                      padding: EdgeInsets.symmetric(vertical: 16.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                    ),
-                    onPressed: () {
-                      Get.to(() => VerificationTimer());
-                    },
-                    child: Text(
-                      'REGISTER',
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.bold,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: GestureDetector(
+                      onTap: () => controller.pickProfileImage(),
+                      child: Obx(
+                        () => CircleAvatar(
+                          radius: 50.r,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: controller.profileImageUrl.value.isNotEmpty
+                              ? NetworkImage(controller.profileImageUrl.value)
+                              : null,
+                          child: controller.profileImageUrl.value.isEmpty
+                              ? Icon(
+                                  Icons.camera_alt,
+                                  color: HexColor('4CA6A8'),
+                                  size: 30.sp,
+                                )
+                              : null,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(height: 16.h),
+                  _buildTextField(
+                    label: 'Company Name',
+                    hintText: 'Enter your company name',
+                    onChanged: (value) => controller.companyName.value = value,
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Field required' : null,
+                  ),
+                  SizedBox(height: 16.h),
+                  _buildTextField(
+                    label: 'Email',
+                    hintText: 'Enter your email',
+                    keyboardType: TextInputType.emailAddress,
+                    onChanged: (value) => controller.email.value = value,
+                    validator: (value) =>
+                        !GetUtils.isEmail(value ?? '') ? 'Invalid email' : null,
+                  ),
+                  SizedBox(height: 16.h),
+                  _buildTextField(
+                    label: 'Password',
+                    hintText: 'Enter your password',
+                    obscureText: true,
+                    onChanged: (value) => controller.password.value = value,
+                    validator: (value) =>
+                        value == null || value.length < 6 ? 'Min 6 characters' : null,
+                  ),
+                  SizedBox(height: 16.h),
+                  _buildTextField(
+                    label: 'Confirm Password',
+                    hintText: 'Re-enter your password',
+                    obscureText: true,
+                    onChanged: (value) => controller.confirmPassword.value = value,
+                    validator: (value) =>
+                        value != controller.password.value ? 'Passwords do not match' : null,
+                  ),
+                  SizedBox(height: 16.h),
+                  _buildTextField(
+                    label: 'Contact Number',
+                    hintText: 'Enter your phone number',
+                    keyboardType: TextInputType.phone,
+                    maxLength: 10,
+                    onChanged: (value) => controller.contactNo.value = value,
+                    validator: (value) =>
+                        value == null || value.length != 10 ? 'Invalid number' : null,
+                  ),
+                  SizedBox(height: 16.h),
+                  _buildTextField(
+                    label: 'About',
+                    hintText: 'Write about your company',
+                    maxLines: 3,
+                    onChanged: (value) => controller.about.value = value,
+                  ),
+                  SizedBox(height: 16.h),
+                  _buildDropdownField(
+                    label: 'Industry',
+                    hintText: 'Select your sector',
+                  ),
+                  SizedBox(height: 16.h),
+                  _buildTextField(
+                    label: 'Location',
+                    hintText: 'Eg: Andheri, Mumbai',
+                    onChanged: (value) => controller.location.value = value,
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Field required' : null,
+                  ),
+                  SizedBox(height: 24.h),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: HexColor('4CA6A8'),
+                        padding: EdgeInsets.symmetric(vertical: 16.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                      ),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          controller.register();
+                        }
+                      },
+                      child: Text(
+                        'REGISTER',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -151,8 +166,11 @@ class CompanyRegister extends StatelessWidget {
     required String label,
     required String hintText,
     bool obscureText = false,
-    Widget? prefixIcon,
     int maxLines = 1,
+    int? maxLength,
+    TextInputType keyboardType = TextInputType.text,
+    required Function(String) onChanged,
+    String? Function(String?)? validator,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,33 +183,27 @@ class CompanyRegister extends StatelessWidget {
           ),
         ),
         SizedBox(height: 8.h),
-      TextField(
-  obscureText: obscureText,
-  maxLines: maxLines,
-  decoration: InputDecoration(
-    hintText: hintText,
-    border: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Colors.red, // Change this to your desired color
-        width: 2.0, // You can also change the width of the border
-      ),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Colors.blue, // Color when the TextField is focused
-        width: 2.0,
-      ),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: HexColor('4CA6A8'), // Color when the TextField is enabled but not focused
-        width: 2.0,
-      ),
-    ),
-    prefixIcon: prefixIcon,
-  ),
-),
-
+        TextFormField(
+          obscureText: obscureText,
+          maxLines: maxLines,
+          maxLength: maxLength,
+          keyboardType: keyboardType,
+          onChanged: onChanged,
+          validator: validator,
+          decoration: InputDecoration(
+            hintText: hintText,
+            counterText: '',
+            border: OutlineInputBorder(
+              borderSide: const BorderSide(width: 2.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.blue, width: 2.0),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: HexColor('4CA6A8'), width: 2.0),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -211,41 +223,28 @@ class CompanyRegister extends StatelessWidget {
           ),
         ),
         SizedBox(height: 8.h),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.w),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(8.r),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              hint: Obx(
-                () =>  Text(
-                  controller.industry.value,
-                  style: TextStyle(fontSize: 14.sp),
-                ),
+        Obx(
+          () => DropdownButtonFormField<String>(
+            dropdownColor: Colors.white,
+            value: controller.industry.value == 'Select your industry'
+                ? null
+                : controller.industry.value,
+            hint: Text(
+              hintText,
+              style: GoogleFonts.poppins(fontSize: 14.sp),
+            ),
+            items: controller.industries
+                .map((industry) =>
+                    DropdownMenuItem(value: industry, child: Text(industry)))
+                .toList(),
+            onChanged: (value) => controller.industry.value = value!,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderSide: const BorderSide(width: 2.0),
               ),
-              items: [
-                DropdownMenuItem(
-                  value: 'IT',
-                  child: Text('IT', style: TextStyle(fontSize: 14.sp)),
-                ),
-                DropdownMenuItem(
-                  value: 'Healthcare',
-                  child: Text('Healthcare', style: TextStyle(fontSize: 14.sp)),
-                ),
-                DropdownMenuItem(
-                  value: 'Finance',
-                  child: Text('Finance', style: TextStyle(fontSize: 14.sp)),
-                ),
-                DropdownMenuItem(
-                  value: 'Education',
-                  child: Text('Education', style: TextStyle(fontSize: 14.sp)),
-                ),
-              ],
-              onChanged: (value) {
-               controller.industry.value = value!;
-              },
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: HexColor('4CA6A8'), width: 2.0),
+              ),
             ),
           ),
         ),

@@ -6,6 +6,7 @@ class Routes {
   static const userHome = '/user/home';
   static const applyJob = '/user/applyJob';
   static const jobApply = '/user/jobApply';
+  static const signUp = '/user/signUp';
   // static const userLogin = '/user/login';
   // static const userLogin = '/user/login';
   static const companyLogin = '/company/login';

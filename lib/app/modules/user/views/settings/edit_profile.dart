@@ -7,13 +7,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
 
-
 class EditProfile extends StatelessWidget {
-  final String uid; // Pass UID of the current user
+  final String uid; 
   EditProfile({Key? key, required this.uid}) : super(key: key);
 
   final controller = Get.put(EditProfileController());
-
 
   @override
   Widget build(BuildContext context) {
@@ -28,29 +26,37 @@ class EditProfile extends StatelessWidget {
           elevation: 0,
           title: Text(
             'Edit Profile',
-            style: GoogleFonts.poppins(fontSize: 18.sp, fontWeight: FontWeight.w500),
+            style: GoogleFonts.poppins(
+                fontSize: 18.sp, fontWeight: FontWeight.w500),
           ),
         ),
         body: FutureBuilder<DocumentSnapshot>(
           future: FirebaseFirestore.instance.collection('users').doc(uid).get(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator(color: HexColor('4CA6A8'),));
+              return Center(
+                  child: CircularProgressIndicator(
+                color: HexColor('4CA6A8'),
+              ));
             }
 
-            if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
+            if (snapshot.hasError ||
+                !snapshot.hasData ||
+                !snapshot.data!.exists) {
               return const Center(child: Text('Failed to load profile data'));
             }
 
             final userData = snapshot.data!;
             controller.nameController.text = userData['name'] ?? '';
             controller.emailController.text = userData['email'] ?? '';
-            controller.qualificationController.text = userData['qualification'] ?? '';
+            controller.qualificationController.text =
+                userData['qualification'] ?? '';
             controller.experienceController.text = userData['experience'] ?? '';
-            controller.skillsController.text = (userData['skills'] as List).join(', ');
+            controller.skillsController.text =
+                (userData['skills'] as List).join(', ');
             controller.phoneController.text = userData['phone'].toString();
             controller.locationController.text = userData['location'] ?? '';
-            controller.profileImageUrl.value = userData['photoUrl'] ?? ''; 
+            controller.profileImageUrl.value = userData['photoUrl'] ?? '';
 
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -66,12 +72,18 @@ class EditProfile extends StatelessWidget {
                           children: [
                             Obx(() {
                               return CircleAvatar(
+                                backgroundColor: Colors.transparent,
                                 radius: 60.r, // Adjusted with ScreenUtil
-                                backgroundImage: controller.profileImageUrl.value.isNotEmpty
-                                    ? NetworkImage(controller.profileImageUrl.value)
-                                    : AssetImage('assets/icons/person.png') as ImageProvider,
+                                backgroundImage:
+                                    controller.profileImageUrl.value.isNotEmpty
+                                        ? NetworkImage(
+                                            controller.profileImageUrl.value)
+                                        : AssetImage('assets/icons/person.png')
+                                            as ImageProvider,
                                 child: controller.isUploading.value
-                                    ? CircularProgressIndicator(color: HexColor('4CA6A8'),) // Show progress indicator if uploading
+                                    ? CircularProgressIndicator(
+                                        color: HexColor('4CA6A8'),
+                                      ) // Show progress indicator if uploading
                                     : null,
                               );
                             }),
@@ -81,7 +93,8 @@ class EditProfile extends StatelessWidget {
                           padding: EdgeInsets.only(left: 195.w, top: 80.h),
                           child: IconButton(
                             onPressed: () {
-                              controller.pickImage(); // Pick image when icon is pressed
+                              controller
+                                  .pickImage(); // Pick image when icon is pressed
                             },
                             icon: Icon(Iconsax.edit5),
                           ),
@@ -90,52 +103,59 @@ class EditProfile extends StatelessWidget {
                     ),
                     SizedBox(height: 20.h),
                     buildLabel('Name'),
-                    buildTextField(controller.nameController, 'Enter your name'),
+                    buildTextField(
+                        controller.nameController, 'Enter your name'),
                     SizedBox(height: 20.h),
                     buildLabel('Email'),
-                    buildTextField(controller.emailController, 'Enter your email'),
+                    buildTextField(
+                        controller.emailController, 'Enter your email'),
                     SizedBox(height: 20.h),
                     buildLabel('Qualification'),
-                    buildTextField(controller.qualificationController, 'Enter your qualification'),
+                    buildTextField(controller.qualificationController,
+                        'Enter your qualification'),
                     SizedBox(height: 20.h),
                     buildLabel('Experience'),
-                    buildTextField(controller.experienceController, 'Enter your experience'),
+                    buildTextField(controller.experienceController,
+                        'Enter your experience'),
                     SizedBox(height: 20.h),
                     buildLabel('Skills'),
-                    buildTextField(controller.skillsController, 'Enter skills (comma-separated)'),
+                    buildTextField(controller.skillsController,
+                        'Enter skills (comma-separated)'),
                     SizedBox(height: 20.h),
-                    
-                  // Location
 
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Contact Number',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w400,
+                    // Location
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Contact Number',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 8.h),
-                      TextFormField(
-                        controller: controller.phoneController,
-                        onChanged: (value) => controller.phoneController.text = value,
-                        obscureText: false,
-                        keyboardType: TextInputType.phone,
-                        maxLength: 10,
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Iconsax.mobile4),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: HexColor('4CA6A8'))),
+                        SizedBox(height: 8.h),
+                        TextFormField(
+                          controller: controller.phoneController,
+                          onChanged: (value) =>
+                              controller.phoneController.text = value,
+                          obscureText: false,
+                          keyboardType: TextInputType.phone,
+                          maxLength: 10,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Iconsax.mobile4),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: HexColor('4CA6A8'))),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  buildLabel('Location'),
-                  buildTextField(controller.locationController, 'Enter your location'),
-                  SizedBox(height: 30.h),
+                      ],
+                    ),
+                    buildLabel('Location'),
+                    buildTextField(
+                        controller.locationController, 'Enter your location'),
+                    SizedBox(height: 30.h),
                     Center(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -143,14 +163,17 @@ class EditProfile extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.r),
                           ),
-                          padding: EdgeInsets.symmetric(horizontal: 50.w, vertical: 15.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 50.w, vertical: 15.h),
                         ),
                         onPressed: () {
-                          controller.updateProfile(uid); // Update profile with new data
+                          controller.updateProfile(
+                              uid); // Update profile with new data
                         },
                         child: Text(
                           'Save Changes',
-                          style: GoogleFonts.poppins(fontSize: 16.sp, color: Colors.white),
+                          style: GoogleFonts.poppins(
+                              fontSize: 16.sp, color: Colors.white),
                         ),
                       ),
                     ),
@@ -170,7 +193,8 @@ class EditProfile extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 5.h),
       child: Text(
         text,
-        style: GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w400),
+        style:
+            GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w400),
       ),
     );
   }

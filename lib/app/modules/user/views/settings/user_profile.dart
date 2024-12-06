@@ -78,16 +78,15 @@ class _UserProfileState extends State<UserProfile> {
                 children: [
                   SizedBox(height: 30.h),
                   CircleAvatar(
+                    backgroundColor: Colors.transparent,
                     radius: 60.r,
                     backgroundImage: profileUrl.isNotEmpty
                         ? NetworkImage(profileUrl)
                         : (user?.photoURL != null
                             ? NetworkImage(user!.photoURL!)
-                            : AssetImage('assets/images/john.png')
+                            : AssetImage('assets/icons/person.png')
                                 as ImageProvider),
-                    child: profileUrl.isEmpty
-                        ? CircularProgressIndicator()
-                        : SizedBox.shrink(),
+                    
                   ),
                   SizedBox(height: 20.h),
                   Row(

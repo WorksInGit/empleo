@@ -14,8 +14,6 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Get the current user from FirebaseAuth
     final user = FirebaseAuth.instance.currentUser;
-    final userName = user?.displayName ?? '';  // Use the displayName, fallback to 'John Doe'
-    final userPhotoUrl = user?.photoURL;
     
 
     return SafeArea(
@@ -25,7 +23,7 @@ class HomePage extends StatelessWidget {
         },
         child: Scaffold(
           backgroundColor: const Color.fromARGB(255, 244, 243, 243),
-          body: StreamBuilder(
+          body: StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
               .collection('users')
               .doc(user?.uid) // Use current user's UID
@@ -48,17 +46,18 @@ class HomePage extends StatelessWidget {
                         width: 20.w,
                       ),
                       Text(
-                        'Hello $userName',  // Display the user's name
+                        'Hello ${userData['name']}',  // Display the user's name
                         style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600, fontSize: 20.sp),
                       ),
                       Text('👋'),
                       Spacer(),
                       CircleAvatar(
+                        backgroundColor: Colors.transparent,
                         radius: 23,
-                        backgroundImage: userPhotoUrl != null
+                        backgroundImage: profileUrl.isNotEmpty
                             ? NetworkImage(profileUrl)  // Use the user's photo if available
-                            : AssetImage('assets/images/person_icon.png') as ImageProvider,  // Default icon
+                            : AssetImage('assets/icons/person.png') as ImageProvider,  // Default icon
                       ),
                       SizedBox(
                         width: 20.w,

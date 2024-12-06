@@ -1,17 +1,19 @@
-import 'package:empleo/app/modules/user/controllers/about_page_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:empleo/app/modules/user/controllers/signup_controller.dart';
 import 'package:iconsax/iconsax.dart';
 
 class AboutPage extends StatelessWidget {
-  const AboutPage({super.key});
+  final String uid;
+
+  const AboutPage({Key? key, required this.uid}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AboutPageController());
+    final controller = Get.put(SignupController());
 
     return SafeArea(
       child: GestureDetector(
@@ -21,7 +23,7 @@ class AboutPage extends StatelessWidget {
         child: Scaffold(
           backgroundColor: Colors.white,
           body: Form(
-            key: controller.formKey,
+            key: controller.formKey2,
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -127,38 +129,44 @@ class AboutPage extends StatelessWidget {
                     ),
                   ),
                   20.verticalSpace,
+
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Contact Number',
+                              style: GoogleFonts.poppins(
+                  
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            SizedBox(height: 8.h),
+                          TextFormField(
+                          obscureText: false,
+                        keyboardType: TextInputType.phone,
+                        maxLength: 10,
+                          decoration: InputDecoration(
+                            
+                        hintText: 'Phone Number',
+                        hintStyle: GoogleFonts.poppins(fontWeight: FontWeight.w200),
+                         enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: HexColor('4CA6A8'))),
+                        
+                        prefixIcon: Icon(Iconsax.mobile4),
+                          ),
+                              onChanged: (value) => controller.phone.value = value,
+                                    validator: (value) =>
+                          controller.validateInput(value!, 'phone number'),
+                        ),
+                        
+                          ],
+                        ),
+                ),
                   // Location
 
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Contact Number',
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        TextFormField(
-                          onChanged: (value) => controller.phone.value = value,
-                          validator: (value) =>
-                              controller.validateInput(value!, 'phone'),
-                          obscureText: false,
-                          keyboardType: TextInputType.phone,
-                          maxLength: 10,
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Iconsax.mobile4),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: HexColor('4CA6A8'))),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                   Row(
                     children: [
                       25.horizontalSpace,
@@ -188,17 +196,27 @@ class AboutPage extends StatelessWidget {
                   ),
                   30.verticalSpace,
                   SizedBox(
-                  width: 340.w,
-                  height: 60.h,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: HexColor('4CA6A8')),
-                    onPressed: () {
-                      controller.submitForm();
-                    }, child: Text('CONTINUE',   style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 18.sp,
-                          ),))),
+                      width: 340.w,
+                      height: 60.h,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: HexColor('4CA6A8')),
+                          onPressed: () {
+                            // Perform form validation
+                            if (controller.formKey2.currentState?.validate() ??
+                                false) {
+                              // If validation passes, save about page data
+                              controller.saveAboutPageData(uid);
+                            }
+                          },
+                          child: Text(
+                            'CONTINUE',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 18.sp,
+                            ),
+                          ))),
                   SizedBox(
                     height: 30.h,
                   )

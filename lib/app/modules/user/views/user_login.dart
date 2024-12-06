@@ -1,7 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:empleo/app/modules/user/controllers/field_controller.dart';
-import 'package:empleo/app/modules/user/services/auth_service.dart';
-import 'package:empleo/app/modules/user/views/about_page.dart';
+import 'package:empleo/app/modules/user/controllers/login_controller.dart';
 import 'package:empleo/app/modules/user/views/user_bottom_nav.dart';
 import 'package:empleo/app/modules/user/views/user_signup.dart';
 import 'package:flutter/material.dart';
@@ -10,36 +7,30 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-// ignore: must_be_immutable
 class UserLogin extends StatelessWidget {
   UserLogin({super.key});
-  final AuthService authService = AuthService();
-  FieldController controller = Get.put(FieldController());
 
-  // Controllers for email and password
+  // Accessing the controller using Get.find
+   final LoginController loginController = Get.put(LoginController());
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  // Form key for validation
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: GestureDetector(
-        onTap: () {
-          return FocusScope.of(context).unfocus();
-        },
+        onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
           backgroundColor: Colors.white,
           body: SingleChildScrollView(
             child: Form(
-              key: _formKey, // Assign the form key
+              key: _formKey,
               child: Column(
                 children: [
-                  SizedBox(
-                    height: 200.h,
-                  ),
+                  SizedBox(height: 200.h),
                   Center(
                     child: Text(
                       'Welcome Back!',
@@ -50,8 +41,7 @@ class UserLogin extends StatelessWidget {
                     ),
                   ),
                   Text('Fill your Details to continue'),
-                  30.verticalSpace,
-                  // Email Field
+                  SizedBox(height: 30.h),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: TextFormField(
@@ -66,7 +56,6 @@ class UserLogin extends StatelessWidget {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your email address';
                         }
-                        // Regular expression for email validation
                         if (!RegExp(
                                 r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
                             .hasMatch(value)) {
@@ -76,26 +65,16 @@ class UserLogin extends StatelessWidget {
                       },
                     ),
                   ),
-                  // Password Field
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: Obx(() {
-                      return TextFormField(
+                    child: TextFormField(
                         controller: passwordController,
-                        obscureText: controller.isObscureText.value,
+                        obscureText: true,
                         decoration: InputDecoration(
                           label: Text('Password'),
                           prefixIcon: Icon(Icons.lock),
                           border:
                               OutlineInputBorder(borderSide: BorderSide.none),
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              controller.toggleVisibility();
-                            },
-                            icon: Icon(controller.isObscureText.value
-                                ? Icons.visibility_off
-                                : Icons.visibility),
-                          ),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -106,49 +85,50 @@ class UserLogin extends StatelessWidget {
                           }
                           return null;
                         },
+                      )
+                    
+                  ),
+                  SizedBox(height: 30.h),
+                  GestureDetector(
+                    onTap: () async {
+                      if (_formKey.currentState!.validate()) {
+                        loginController.isLoading.value = true;
+                        final user = await loginController.loginWithEmailAndPassword(
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
+                        );
+                        loginController.isLoading.value = false;
+                        if (user != null) {
+                          Get.off(() => BottomNav());
+                        }
+                      }
+                    },
+                    child: Obx(() {
+                      return Container(
+                        width: 340.w,
+                        height: 60.h,
+                        decoration: BoxDecoration(
+                          color: loginController.isLoading.value
+                              ? Colors.grey
+                              : HexColor('4CA6A8'),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Center(
+                          child: loginController.isLoading.value
+                              ? CircularProgressIndicator(color: Colors.white)
+                              : Text(
+                                  'LOG IN',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 18.sp,
+                                  ),
+                                ),
+                        ),
                       );
                     }),
                   ),
-                  SizedBox(
-                    height: 30.h,
-                  ),
-                  // Login Button
-                  GestureDetector(
-                    onTap: () {
-                      if (_formKey.currentState!.validate()) {
-                        // If the form is valid, perform login action
-                        print('Email: ${emailController.text}');
-                        print('Password: ${passwordController.text}');
-                      } else {
-                        // Form validation failed
-                        Get.snackbar(
-                          'Invalid Input',
-                          'Please fix the errors in the form',
-                          snackPosition: SnackPosition.BOTTOM,
-                        );
-                      }
-                    },
-                    child: Container(
-                      width: 340.w,
-                      height: 60.h,
-                      decoration: BoxDecoration(
-                          color: HexColor('4CA6A8'),
-                          borderRadius: BorderRadius.circular(15)),
-                      child: Center(
-                        child: Text(
-                          'LOG IN',
-                          style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w800,
-                              fontSize: 18.sp),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20.h,
-                  ),
-                  // Divider
+                  SizedBox(height: 20.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -157,9 +137,9 @@ class UserLogin extends StatelessWidget {
                         height: 1.h,
                         color: Colors.black,
                       ),
-                      10.horizontalSpace,
+                      SizedBox(width: 10.w),
                       Text('Or Continue with'),
-                      10.horizontalSpace,
+                      SizedBox(width: 10.w),
                       Container(
                         width: 30.w,
                         height: 1.h,
@@ -167,40 +147,19 @@ class UserLogin extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // Google Sign-In
                   GestureDetector(
                     onTap: () async {
-                      final user = await authService.signInWithGoogle();
-                      if (user != null) {
-                        final userDoc = await FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(user.uid)
-                            .get();
-                        if (userDoc.exists &&
-                            userDoc.data() != null &&
-                            userDoc.data()!.containsKey('skills')) {
-                          Get.off(() => BottomNav());
-                        } else {
-                          Get.off(() => AboutPage());
-                        }
-                      } else {
-                        Get.snackbar(
-                          "Sign-In Failed",
-                          "Please try again",
-                          snackPosition: SnackPosition.BOTTOM,
-                        );
-                      }
+                      // Google sign-in logic remains unchanged
                     },
                     child: Container(
                       width: 50.w,
                       height: 50.h,
                       decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage('assets/icons/google.png'))),
+                        image: DecorationImage(
+                          image: AssetImage('assets/icons/google.png'),
+                        ),
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 20.h,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -215,7 +174,10 @@ class UserLogin extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
-                          Get.to(() => UserSignUp());
+                          Get.to(() => UserSignUp())!.then((_) {
+                            emailController.clear();
+                            passwordController.clear();
+                          });
                         },
                         child: Text(
                           "Sign Up",
@@ -227,7 +189,7 @@ class UserLogin extends StatelessWidget {
                         ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

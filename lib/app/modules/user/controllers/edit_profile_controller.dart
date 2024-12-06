@@ -56,7 +56,8 @@ class EditProfileController extends GetxController {
         'qualification': qualificationController.text,
         'experience': experienceController.text,
         'skills': skills,
-        'photoUrl': profileImageUrl.value.isEmpty ? null : profileImageUrl.value,
+        'photoUrl':
+            profileImageUrl.value.isEmpty ? null : profileImageUrl.value,
         'phone': int.parse(phoneController.text),
         'location': locationController.text
       });
