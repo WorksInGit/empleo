@@ -13,41 +13,42 @@ class VerifiedPage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-         body: Column(
+        body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-           children: [
-             Center(
+          children: [
+            Center(
               child: Image.asset('assets/images/image4.png'),
-             ),
-             Text('Verified successfully', style: GoogleFonts.poppins(fontSize: 25.sp,
-             fontWeight: FontWeight.bold
-             ),),
-               SizedBox(
-                width: 300,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: HexColor('4CA6A8'),
-                    padding: EdgeInsets.symmetric(vertical: 16.h),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
+            ),
+            Text(
+              'Verified successfully',
+              style: GoogleFonts.poppins(
+                  fontSize: 25.sp, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              width: 300,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: HexColor('4CA6A8'),
+                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.r),
                   ),
-                  onPressed: () {
-                      Get.to(() => CompanyNav());
-                  },
-                  child: Text(
-                    'OK',
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
+                ),
+                onPressed: () {
+                  Get.to(() => CompanyNav());
+                },
+                child: Text(
+                  'OK',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-
-           ],
-         ),
+            ),
+          ],
+        ),
       ),
     );
   }

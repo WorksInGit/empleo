@@ -1,17 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:empleo/app/common/landing_page.dart';
+import 'package:empleo/app/common/user_feedback.dart';
 import 'package:empleo/app/modules/user/controllers/login_controller.dart';
 import 'package:empleo/app/modules/user/services/auth_service.dart';
 import 'package:empleo/app/modules/user/views/settings/about_app.dart';
 import 'package:empleo/app/modules/user/views/settings/user_faq.dart';
-import 'package:empleo/app/common/user_feedback.dart';
 import 'package:empleo/app/modules/user/views/settings/user_profile.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -46,11 +41,11 @@ class SettingsPage extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => UserProfile(),
-                              ));
+                          Get.to(
+                            () => UserProfile(),
+                            transition: Transition.cupertino,
+                            duration: const Duration(milliseconds: 500),
+                          );
                         },
                         child: Container(
                           width: 250.w,
@@ -77,11 +72,11 @@ class SettingsPage extends StatelessWidget {
                       SizedBox(height: 20.h),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => UserFeedback(),
-                              ));
+                          Get.to(
+                            () => UserFeedback(),
+                            transition: Transition.cupertino,
+                            duration: const Duration(milliseconds: 500),
+                          );
                         },
                         child: Container(
                           width: 250.w,
@@ -108,11 +103,11 @@ class SettingsPage extends StatelessWidget {
                       SizedBox(height: 20.h),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => UserFaq(),
-                              ));
+                          Get.to(
+                            () => UserFaq(),
+                            transition: Transition.cupertino,
+                            duration: const Duration(milliseconds: 500),
+                          );
                         },
                         child: Container(
                           width: 250.w,
@@ -139,11 +134,11 @@ class SettingsPage extends StatelessWidget {
                       SizedBox(height: 20.h),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AboutApp(),
-                              ));
+                          Get.to(
+                            () => AboutApp(),
+                            transition: Transition.cupertino,
+                            duration: const Duration(milliseconds: 500),
+                          );
                         },
                         child: Container(
                           width: 250.w,

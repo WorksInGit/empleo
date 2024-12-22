@@ -1,15 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:empleo/app/modules/company/views/company_bottom_nav.dart';
-import 'package:empleo/app/modules/company/views/home/company_home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class LoginPageController extends GetxController {
   var email = ''.obs;
   var password = ''.obs;
   var obscureText = true.obs;
-  var isLoading = false.obs; // Loading state
+  var isLoading = false.obs;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -18,7 +17,6 @@ class LoginPageController extends GetxController {
     obscureText.value = !obscureText.value;
   }
 
-  // Login method
   void login() async {
     if (email.value.isEmpty || password.value.isEmpty) {
       Get.snackbar(
@@ -31,15 +29,13 @@ class LoginPageController extends GetxController {
       return;
     }
 
-    isLoading.value = true; // Start loading
+    isLoading.value = true;
     try {
-      // Sign in with Firebase Authentication
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email.value,
         password: password.value,
       );
 
-      // Fetch company data from Firestore
       DocumentSnapshot companyDoc = await _firestore
           .collection('companies')
           .doc(userCredential.user!.uid)
@@ -54,15 +50,13 @@ class LoginPageController extends GetxController {
           colorText: Colors.white,
         );
       } else {
-        // Check the `status` field
         int status = companyDoc.get('status') ?? 0;
         if (status == 1) {
           Get.off(
-          CompanyNav(),
-          transition: Transition.fadeIn, // Specify the transition
-          duration:
-              Duration(milliseconds: 500), // Optional: set animation duration
-        );
+            CompanyNav(),
+            transition: Transition.fadeIn,
+            duration: Duration(milliseconds: 500),
+          );
         } else {
           Get.snackbar(
             'Error',
@@ -82,7 +76,7 @@ class LoginPageController extends GetxController {
         colorText: Colors.white,
       );
     } finally {
-      isLoading.value = false; // Stop loading
+      isLoading.value = false;
     }
   }
 }

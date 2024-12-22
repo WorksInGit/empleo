@@ -20,14 +20,19 @@ class SelectionPage extends StatelessWidget {
             Container(
               width: 400.w,
               height: 420.h,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage('assets/images/image1.png'), fit: BoxFit.cover)),
+                      image: AssetImage('assets/images/image1.png'),
+                      fit: BoxFit.cover)),
             ),
             80.verticalSpace,
             GestureDetector(
-              onTap: (){
-                Get.to(() => UserLogin());
+              onTap: () {
+                Get.to(
+                  UserLogin(),
+                  transition: Transition.cupertino,
+                  duration: const Duration(milliseconds: 500),
+                );
               },
               child: Container(
                 width: 330.w,
@@ -40,7 +45,7 @@ class SelectionPage extends StatelessWidget {
                     Container(
                       width: 100.w,
                       height: 100.h,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           image: DecorationImage(
                               image: AssetImage('assets/images/image2.png'))),
                     ),
@@ -72,11 +77,15 @@ class SelectionPage extends StatelessWidget {
               ),
             ),
             SizedBox(
-            height: 30.h,
-          ),
+              height: 30.h,
+            ),
             GestureDetector(
               onTap: () {
-                Get.to(() => CompanyLogin());
+                Get.to(
+                  CompanyLogin(),
+                  transition: Transition.cupertino,
+                  duration: Duration(milliseconds: 500),
+                );
               },
               child: Container(
                 width: 330.w,
@@ -89,7 +98,7 @@ class SelectionPage extends StatelessWidget {
                     Container(
                       width: 100.w,
                       height: 100.h,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           image: DecorationImage(
                               image: AssetImage('assets/images/image3.png'))),
                     ),

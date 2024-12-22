@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:iconsax/iconsax.dart';
 
 class UserFaq extends StatelessWidget {
   final List<FAQ> faqList = [
@@ -35,44 +33,30 @@ class UserFaq extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          SizedBox(height: 15.h), 
-          Row(
-            children: [
-              SizedBox(width: 20.w), 
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-                  Iconsax.arrow_circle_left,
-                  size: 30.sp, 
+    return SafeArea(
+      child: Scaffold(
+         appBar: AppBar(
+            title: Text('FAQ', style: GoogleFonts.poppins(),),
+            centerTitle: true,
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+          ),
+        backgroundColor: Colors.white,
+        body: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(15.w), 
+                child: ListView.builder(
+                  itemCount: faqList.length,
+                  itemBuilder: (context, index) {
+                    return FAQTile(faq: faqList[index]);
+                  },
                 ),
               ),
-              SizedBox(width: 125.w), 
-              Text(
-                'FAQ',
-                style: GoogleFonts.poppins(
-                    fontSize: 20.sp, fontWeight: FontWeight.w500),
-              ),
-            ],
-          ),
-          SizedBox(height: 30.h), 
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(15.w), 
-              child: ListView.builder(
-                itemCount: faqList.length,
-                itemBuilder: (context, index) {
-                  return FAQTile(faq: faqList[index]);
-                },
-              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

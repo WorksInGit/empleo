@@ -35,8 +35,7 @@ class CompanySupport extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        automaticallyImplyLeading: false
-        ,
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         centerTitle: true,
         title: Text('Support & Assistance'),

@@ -1,18 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:empleo/app/common/user_feedback.dart';
 import 'package:empleo/app/modules/company/controllers/add_job_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class CompanyHome extends StatelessWidget {
-   CompanyHome({super.key});
+  CompanyHome({super.key});
 
- final AddJobController controller = Get.put(AddJobController());
+  final AddJobController controller = Get.put(AddJobController());
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +19,7 @@ class CompanyHome extends StatelessWidget {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 244, 243, 243),
         body: Padding(
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -31,21 +27,24 @@ class CompanyHome extends StatelessWidget {
               Row(
                 children: [
                   const Spacer(),
-                  FutureBuilder<String>(
-                    future: controller.fetchCompanyImage(),
+                  FutureBuilder<Map<String, String>>(
+                    future: controller.fetchCompanyDetails(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator(); // Show a loading spinner while fetching the image
-                      } else if (snapshot.hasError || snapshot.data!.isEmpty) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError ||
+                          snapshot.data == null ||
+                          snapshot.data!['photoUrl']!.isEmpty) {
                         return const CircleAvatar(
                           backgroundColor: Colors.transparent,
                           child: Icon(Icons.person, color: Colors.grey),
-                        ); // Fallback icon if no image found or an error occurs
+                        );
                       } else {
+                        final photoUrl = snapshot.data!['photoUrl']!;
                         return CircleAvatar(
                           backgroundColor: Colors.transparent,
-                          backgroundImage: NetworkImage(snapshot.data!),
-                        ); // Show the fetched image
+                          backgroundImage: NetworkImage(photoUrl),
+                        );
                       }
                     },
                   ),

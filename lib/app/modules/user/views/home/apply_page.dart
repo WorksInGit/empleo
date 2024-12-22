@@ -7,7 +7,9 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
 
 class ApplyPage extends StatelessWidget {
-  const ApplyPage({super.key});
+  final Map<String, dynamic> jobDetails;
+
+  const ApplyPage({required this.jobDetails, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,91 +18,135 @@ class ApplyPage extends StatelessWidget {
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.white,
-          body: Column(
+          body: Stack(
             children: [
-              SizedBox(height: 100.h),
-              Container(
-                width: 40.w,
-                height: 40.h,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/icons/google.png'),
-                  ),
-                ),
-              ),
-              SizedBox(height: 30.h),
-              Text(
-                'Product Lead Manager',
-                style: GoogleFonts.poppins(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(height: 20.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Column(
                 children: [
-                  Text(
-                    'Google -',
-                    style: GoogleFonts.poppins(fontSize: 14.sp),
+                  SizedBox(height: 50.h),
+                  CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: NetworkImage(
+                      jobDetails['photoUrl'] ?? 'https://via.placeholder.com/150',
+                    ),
+                    radius: 50.r,
                   ),
-                  Icon(Iconsax.location5, size: 16.sp),
+                  SizedBox(height: 20.h),
                   Text(
-                    'Anderi, Mumbai',
-                    style: GoogleFonts.poppins(fontSize: 14.sp),
+                    jobDetails['jobName'] ?? 'Job Title Unavailable',
+                    style: GoogleFonts.poppins(
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 15.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${jobDetails['companyName'] ?? 'Company Unavailable'} -',
+                        style: GoogleFonts.poppins(fontSize: 16.sp),
+                      ),
+                      Icon(Iconsax.location5, size: 18.sp),
+                      Text(
+                        jobDetails['location'] ?? 'Location Unavailable',
+                        style: GoogleFonts.poppins(fontSize: 16.sp),
+                      )
+                    ],
+                  ),
+                  SizedBox(height: 15.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Iconsax.clock5, size: 18.sp),
+                      SizedBox(width: 5.w),
+                      Text(
+                        jobDetails['mode'] ?? 'Mode Unavailable',
+                        style: GoogleFonts.poppins(fontSize: 16.sp),
+                      ),
+                      SizedBox(width: 10.w),
+                      Row(
+                        children: [
+                          Icon(Icons.currency_rupee_sharp, size: 16.sp),
+                          Text(
+                            '${jobDetails['salary'] ?? '0'}/m',
+                            style: GoogleFonts.poppins(fontSize: 16.sp),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20.h),
+                  TabBar(
+                    dividerColor: Colors.transparent,
+                    indicator: BoxDecoration(
+                      color: HexColor('4CA6A8'),
+                      borderRadius: BorderRadius.circular(15.r),
+                    ),
+                    labelStyle: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    tabs: [
+                      SizedBox(
+                        width: 250.w,
+                        child: Tab(text: 'Description'),
+                      ),
+                      SizedBox(
+                        width: 250.w,
+                        child: Tab(text: 'Company'),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10),
+                      child: TabBarView(
+                        children: [
+                          Description(
+                            skills: jobDetails['skills'],
+                            description: jobDetails['qualifications'] ??
+                                ['No qualifications specified.'],
+                          ),
+                          AboutCompany(
+                            companyInfo: jobDetails['about'] ??
+                                'No company details available.',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  
+                  SizedBox(
+                    height: 10.h,
                   )
                 ],
               ),
-              SizedBox(height: 20.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Iconsax.clock5, size: 16.sp),
-                  SizedBox(width: 5.w),
-                  Text(
-                    'Full Time',
-                    style: GoogleFonts.poppins(fontSize: 14.sp),
-                  ),
-                  SizedBox(width: 10.w),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.currency_rupee_sharp,
-                        size: 15.sp,
+              Padding(
+                padding: EdgeInsets.only(top: 660.h, left: 115.w),
+                child: SizedBox(
+                  width: 170.w,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Get.to(() => JobApply(
+                            jobDetails: jobDetails,
+                          ));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: HexColor('4CA6A8'),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.r),
                       ),
-                      Text('1200/m', style: GoogleFonts.poppins(fontSize: 14.sp))
-                    ],
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                    ),
+                    child: Text(
+                      'Apply Now',
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                ],
-              ),
-              SizedBox(height: 30.h),
-              TabBar(
-                dividerColor: Colors.transparent,
-                indicator: BoxDecoration(
-                  color: HexColor('4CA6A8'),
-                  borderRadius: BorderRadius.circular(15.r),
-                ),
-                labelStyle: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-                tabs: [
-                  SizedBox(
-                    width: 250.w,
-                    child: Tab(text: 'Description'),
-                  ),
-                  SizedBox(
-                    width: 250.w,
-                    child: Tab(text: 'Company'),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    Description(),
-                    AboutCompany(),
-                  ],
                 ),
               ),
             ],
@@ -111,95 +157,10 @@ class ApplyPage extends StatelessWidget {
   }
 }
 
-class Description extends StatelessWidget {
-  const Description({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: EdgeInsets.all(7.w),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(20.w),
-                  child: Text(
-                    'Qualification :',
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18.sp,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            _buildListItem('Exceptional communication skill and team'),
-            _buildListItem('working skill'),
-            _buildListItem('Exceptional communication skill and team'),
-            _buildListItem('working skill'),
-            _buildListItem('Exceptional communication skill and team'),
-            _buildListItem('working skill'),
-            SizedBox(height: 30.h),
-            GestureDetector(
-              onTap: () {
-                Get.to(() => JobApply());
-              },
-              child: Container(
-                width: 300.w,
-                height: 60.h,
-                decoration: BoxDecoration(
-                  color: HexColor('4CA6A8'),
-                  borderRadius: BorderRadius.circular(15.r),
-                ),
-                child: Center(
-                  child: Text(
-                    'Apply Now',
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildListItem(String text) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 7.h),
-      child: Row(
-        children: [
-          SizedBox(width: 20.w),
-          Icon(
-            Icons.circle,
-            size: 13.sp,
-          ),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: Text(
-              text,
-              style: GoogleFonts.poppins(
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w300,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class AboutCompany extends StatelessWidget {
-  const AboutCompany({super.key});
+  final String companyInfo;
+
+  const AboutCompany({required this.companyInfo, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -210,14 +171,13 @@ class AboutCompany extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 20.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Text(
                 'About',
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w600,
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                 ),
               ),
             ),
@@ -225,12 +185,128 @@ class AboutCompany extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Text(
-                'Google is a multinational company in the silicon valley of '
-                'California and one of the leading companies in the technology industry.',
-                style: GoogleFonts.poppins(fontSize: 14.sp),
+                companyInfo,
+                style: GoogleFonts.poppins(fontSize: 15.sp),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class Description extends StatelessWidget {
+  final dynamic description;
+  final dynamic skills;
+
+  const Description({required this.description, required this.skills, Key? key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Padding(
+        padding: EdgeInsets.all(18.w),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Qualifications',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18.sp,
+                ),
+              ),
+              SizedBox(height: 10.h),
+              description is List
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: description.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: 5.h),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '\u2022 ',
+                                style: TextStyle(
+                                  fontSize: 20.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  description[index],
+                                  style: GoogleFonts.poppins(fontSize: 15.sp),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    )
+                  : Text(
+                      description ?? 'No qualifications specified.',
+                      style: GoogleFonts.poppins(fontSize: 16.sp),
+                    ),
+              SizedBox(height: 20.h),
+              Text(
+                'Skills',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18.sp,
+                ),
+              ),
+              SizedBox(height: 10.h),
+              skills is List
+                  ? SingleChildScrollView(
+                    child: Column(
+                      children: [
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: skills.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: EdgeInsets.symmetric(vertical: 5.h),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '\u2022 ',
+                                      style: TextStyle(
+                                        fontSize: 20.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        skills[index],
+                                        style: GoogleFonts.poppins(fontSize: 15.sp),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                    ),
+                  )
+                  : Text(
+                      skills ?? 'No skills specified.',
+                      style: GoogleFonts.poppins(fontSize: 16.sp),
+                    ),
+                    SizedBox(
+                      height: 50.h,
+                    )
+            ],
+          ),
         ),
       ),
     );

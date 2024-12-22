@@ -7,8 +7,6 @@ class Routes {
   static const applyJob = '/user/applyJob';
   static const jobApply = '/user/jobApply';
   static const signUp = '/user/signUp';
-  // static const userLogin = '/user/login';
-  // static const userLogin = '/user/login';
   static const companyLogin = '/company/login';
   static const companyRegister = '/company/register';
   static const verificationTimer = '/company/verificationTimer';

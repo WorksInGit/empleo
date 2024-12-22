@@ -11,7 +11,7 @@ class ApprovalController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  var status = 0.obs; // Reactive status variable
+  var status = 0.obs;
 
   @override
   void onInit() {
@@ -22,7 +22,11 @@ class ApprovalController extends GetxController {
   void _listenToStatus() {
     String? uid = _auth.currentUser?.uid;
     if (uid != null) {
-      _firestore.collection('companies').doc(uid).snapshots().listen((snapshot) {
+      _firestore
+          .collection('companies')
+          .doc(uid)
+          .snapshots()
+          .listen((snapshot) {
         if (snapshot.exists) {
           int? updatedStatus = snapshot.data()?['status'];
           if (updatedStatus != null) {
@@ -36,7 +40,7 @@ class ApprovalController extends GetxController {
 
   void _handleStatusChange(int updatedStatus) {
     if (updatedStatus == 1) {
-      Get.offAll(() => CompanyNav()); // Navigate to the homepage
+      Get.offAll(() => CompanyNav());
     } else if (updatedStatus == -1) {
       _showRejectionDialog();
     }
@@ -46,9 +50,8 @@ class ApprovalController extends GetxController {
     String? uid = _auth.currentUser?.uid;
     await _firestore.collection('companies').doc(uid).delete();
 
-      // Delete the Authentication user
-      await FirebaseAuth.instance.currentUser?.delete(); // Ensure admin is not logged in as the target user
-      await FirebaseAuth.instance.signOut();
+    await FirebaseAuth.instance.currentUser?.delete();
+    await FirebaseAuth.instance.signOut();
     Get.defaultDialog(
       backgroundColor: Colors.white,
       buttonColor: HexColor('4CA6A8'),
@@ -58,7 +61,7 @@ class ApprovalController extends GetxController {
       middleText: 'Your registration request has been rejected by the admin.',
       textConfirm: 'OK',
       onConfirm: () {
-        Get.offAll(() => CompanyLogin()); // Navigate to the login page
+        Get.offAll(() => CompanyLogin());
       },
     );
   }

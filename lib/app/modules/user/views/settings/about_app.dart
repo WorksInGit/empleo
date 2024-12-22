@@ -7,24 +7,18 @@ class AboutApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+          appBar: AppBar(
+            title: Text('About', style: GoogleFonts.poppins(),),
+            centerTitle: true,
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+          ),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           padding: EdgeInsets.all(16.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 15.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'About',
-                    style: GoogleFonts.poppins(
-                        fontSize: 20.sp, fontWeight: FontWeight.w500),
-                  ),
-                ],
-              ),
-              SizedBox(height: 30.h),
               Center(
                 child: Column(
                   children: [

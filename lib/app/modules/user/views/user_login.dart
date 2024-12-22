@@ -1,4 +1,5 @@
 import 'package:empleo/app/modules/user/controllers/login_controller.dart';
+import 'package:empleo/app/modules/user/services/auth_service.dart';
 import 'package:empleo/app/modules/user/views/user_bottom_nav.dart';
 import 'package:empleo/app/modules/user/views/user_signup.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +11,8 @@ import 'package:hexcolor/hexcolor.dart';
 class UserLogin extends StatelessWidget {
   UserLogin({super.key});
 
-  // Accessing the controller using Get.find
-   final LoginController loginController = Get.put(LoginController());
+  final AuthService authService = Get.put(AuthService());
+  final LoginController loginController = Get.put(LoginController());
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -68,38 +69,41 @@ class UserLogin extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: TextFormField(
-                        controller: passwordController,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          label: Text('Password'),
-                          prefixIcon: Icon(Icons.lock),
-                          border:
-                              OutlineInputBorder(borderSide: BorderSide.none),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
-                          }
-                          if (value.length < 6) {
-                            return 'Password must be at least 6 characters long';
-                          }
-                          return null;
-                        },
-                      )
-                    
+                      controller: passwordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        label: Text('Password'),
+                        prefixIcon: Icon(Icons.lock),
+                        border: OutlineInputBorder(borderSide: BorderSide.none),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        if (value.length < 6) {
+                          return 'Password must be at least 6 characters long';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
                   SizedBox(height: 30.h),
                   GestureDetector(
                     onTap: () async {
                       if (_formKey.currentState!.validate()) {
                         loginController.isLoading.value = true;
-                        final user = await loginController.loginWithEmailAndPassword(
+                        final user =
+                            await loginController.loginWithEmailAndPassword(
                           emailController.text.trim(),
                           passwordController.text.trim(),
                         );
                         loginController.isLoading.value = false;
                         if (user != null) {
-                          Get.off(() => BottomNav());
+                          Get.off(
+                            BottomNav(),
+                            transition: Transition.cupertino,
+                            duration: Duration(milliseconds: 500),
+                          );
                         }
                       }
                     },
@@ -149,7 +153,22 @@ class UserLogin extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      // Google sign-in logic remains unchanged
+                      final user = await authService.signInWithGoogle();
+                      if (user != null) {
+                        Get.to(
+                          () => BottomNav(),
+                          transition: Transition.cupertino,
+                          duration: Duration(milliseconds: 500),
+                        );
+                      } else {
+                        Get.snackbar(
+                          'Error',
+                          'Google Sign-In failed',
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: Colors.redAccent,
+                          colorText: Colors.white,
+                        );
+                      }
                     },
                     child: Container(
                       width: 50.w,

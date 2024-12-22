@@ -9,17 +9,18 @@ class LoginController extends GetxController {
 
   Future<User?> loginWithEmailAndPassword(String email, String password) async {
     try {
-      final UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      final UserCredential userCredential =
+          await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
       return userCredential.user;
     } catch (e) {
-      Get.snackbar('Login Failed', e.toString(), snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar('Login Failed', e.toString(),
+          snackPosition: SnackPosition.BOTTOM);
       return null;
     }
   }
-
 
   Future<void> logout() async {
     await _auth.signOut();

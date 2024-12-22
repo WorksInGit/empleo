@@ -8,9 +8,15 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration(seconds: 3), () {
-      Get.offAll(() => LandingPage());
-    },);
+    Future.delayed(
+      const Duration(seconds: 3),
+      () {
+        Get.offAll(() => LandingPage(),
+          transition: Transition.fade,
+          duration: const Duration(milliseconds: 2000),
+        );
+      },
+    );
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -23,7 +29,7 @@ class SplashScreen extends StatelessWidget {
                 height: 200.r,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50).r,
-                  image: DecorationImage(
+                  image: const DecorationImage(
                     image: AssetImage('assets/icons/logo.png'),
                     fit: BoxFit.cover,
                   ),

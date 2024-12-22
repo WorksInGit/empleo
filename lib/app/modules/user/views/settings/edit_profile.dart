@@ -8,7 +8,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
 
 class EditProfile extends StatelessWidget {
-  final String uid; 
+  final String uid;
   EditProfile({Key? key, required this.uid}) : super(key: key);
 
   final controller = Get.put(EditProfileController());
@@ -26,8 +26,7 @@ class EditProfile extends StatelessWidget {
           elevation: 0,
           title: Text(
             'Edit Profile',
-            style: GoogleFonts.poppins(
-                fontSize: 18.sp, fontWeight: FontWeight.w500),
+            style: GoogleFonts.poppins(),
           ),
         ),
         body: FutureBuilder<DocumentSnapshot>(

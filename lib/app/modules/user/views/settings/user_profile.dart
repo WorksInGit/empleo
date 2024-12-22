@@ -27,12 +27,18 @@ class _UserProfileState extends State<UserProfile> {
           surfaceTintColor: HexColor('4CA6A8'),
           automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
-          title: Text('Profile'),
+          title: Text('Profile',style: GoogleFonts.poppins(),),
           centerTitle: true,
           actions: [
             IconButton(
               onPressed: () {
-                Get.to(() => EditProfile(uid: user!.uid));
+                Get.to(
+                  () => EditProfile(
+                    uid: user!.uid,
+                  ),
+                  transition: Transition.cupertino,
+                  duration: const Duration(milliseconds: 500),
+                );
               },
               icon: Icon(
                 Iconsax.edit5,
@@ -86,7 +92,6 @@ class _UserProfileState extends State<UserProfile> {
                             ? NetworkImage(user!.photoURL!)
                             : AssetImage('assets/icons/person.png')
                                 as ImageProvider),
-                    
                   ),
                   SizedBox(height: 20.h),
                   Row(
@@ -205,7 +210,8 @@ class _UserProfileState extends State<UserProfile> {
                       width: 350.w,
                       height: 60.h,
                       decoration: BoxDecoration(
-                        border: Border.all(color: HexColor('4CA6A8')),
+                        border: Border.all(
+                            color: const Color.fromARGB(255, 238, 237, 237)),
                       ),
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
@@ -220,13 +226,16 @@ class _UserProfileState extends State<UserProfile> {
                                 width: 80.w,
                                 height: 40.h,
                                 decoration: BoxDecoration(
-                                  color: Colors.grey,
+                                  border: Border.all(color: HexColor('4CA6A8')),
+                                  color: Colors.white,
                                   borderRadius: BorderRadius.circular(15).r,
                                 ),
                                 child: Center(
                                     child: Text(
                                   skills[index],
-                                  style: GoogleFonts.poppins(fontSize: 11),
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 11.sp,
+                                      fontWeight: FontWeight.w200),
                                 )),
                               ),
                               SizedBox(

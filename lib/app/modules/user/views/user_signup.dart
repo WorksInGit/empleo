@@ -33,7 +33,6 @@ class UserSignUp extends StatelessWidget {
                     ),
                   ),
                   50.verticalSpace,
-                  // Name Field
                   Row(
                     children: [
                       25.horizontalSpace,
@@ -50,7 +49,8 @@ class UserSignUp extends StatelessWidget {
                       controller: signupController.nameController,
                       decoration: InputDecoration(
                         labelText: 'Your name',
-                        labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w200),
+                        labelStyle:
+                            GoogleFonts.poppins(fontWeight: FontWeight.w200),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: HexColor('4CA6A8')),
                         ),
@@ -60,7 +60,6 @@ class UserSignUp extends StatelessWidget {
                     ),
                   ),
                   20.verticalSpace,
-                  // Email Field
                   Row(
                     children: [
                       25.horizontalSpace,
@@ -77,7 +76,8 @@ class UserSignUp extends StatelessWidget {
                       controller: signupController.emailController,
                       decoration: InputDecoration(
                         labelText: 'Your email address',
-                        labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w200),
+                        labelStyle:
+                            GoogleFonts.poppins(fontWeight: FontWeight.w200),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: HexColor('4CA6A8')),
                         ),
@@ -87,7 +87,6 @@ class UserSignUp extends StatelessWidget {
                     ),
                   ),
                   20.verticalSpace,
-                  // Password Field
                   Row(
                     children: [
                       25.horizontalSpace,
@@ -106,7 +105,8 @@ class UserSignUp extends StatelessWidget {
                         obscureText: signupController.isObscureText.value,
                         decoration: InputDecoration(
                           labelText: 'Your password',
-                          labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w200),
+                          labelStyle:
+                              GoogleFonts.poppins(fontWeight: FontWeight.w200),
                           suffixIcon: IconButton(
                             onPressed: signupController.toggleVisibility,
                             icon: Icon(
@@ -125,7 +125,6 @@ class UserSignUp extends StatelessWidget {
                     ),
                   ),
                   20.verticalSpace,
-                  // Confirm Password Field
                   Row(
                     children: [
                       25.horizontalSpace,
@@ -144,7 +143,8 @@ class UserSignUp extends StatelessWidget {
                         obscureText: signupController.isObscureText2.value,
                         decoration: InputDecoration(
                           labelText: 'Confirm password',
-                          labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w200),
+                          labelStyle:
+                              GoogleFonts.poppins(fontWeight: FontWeight.w200),
                           suffixIcon: IconButton(
                             onPressed: signupController.toggleVisibilityConfirm,
                             icon: Icon(
@@ -163,7 +163,6 @@ class UserSignUp extends StatelessWidget {
                     ),
                   ),
                   30.verticalSpace,
-                  // Submit Button
                   SizedBox(
                     width: 340.w,
                     height: 60.h,

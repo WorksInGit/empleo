@@ -1,11 +1,8 @@
 import 'package:empleo/app/modules/company/controllers/approval_controller.dart';
-import 'package:empleo/app/modules/company/views/verified_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hexcolor/hexcolor.dart';
 
 class VerificationWaiting extends StatelessWidget {
    VerificationWaiting({super.key});

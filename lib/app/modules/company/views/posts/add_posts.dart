@@ -1,11 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:empleo/app/modules/company/controllers/add_job_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:iconsax/iconsax.dart';
-import 'package:get/get.dart';
 
 class AddPosts extends StatelessWidget {
   AddPosts({super.key});
@@ -19,26 +17,19 @@ class AddPosts extends StatelessWidget {
           return FocusScope.of(context).unfocus();
         },
         child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: const Color.fromARGB(255, 244, 243, 243),
+            title: const Text('Add Job'),
+            centerTitle: true,
+            surfaceTintColor: HexColor('4CA6A8'),
+          ),
           backgroundColor: const Color.fromARGB(255, 244, 243, 243),
           body: SingleChildScrollView(
             child: Form(
               key: controller.formKey,
               child: Column(
                 children: [
-                  SizedBox(height: 20.h),
-                  Row(
-                    children: [
-                      SizedBox(width: 20.w),
-                      const Icon(Iconsax.arrow_circle_left4, size: 30),
-                      SizedBox(width: 100.w),
-                      Text(
-                        'Add Job',
-                        style: GoogleFonts.poppins(
-                            fontSize: 25.sp, fontWeight: FontWeight.w600),
-                      )
-                    ],
-                  ),
-                  SizedBox(height: 30.h),
                   _buildLabel('Job Name'),
                   _buildTextField(
                     controller: controller.jobNameController,
@@ -51,58 +42,22 @@ class AddPosts extends StatelessWidget {
                     },
                   ),
                   _buildLabel('Qualification'),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30).r,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextFormField(
-                          controller: controller.qualificationInputController,
-                          decoration: InputDecoration(
-                              hintStyle: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w400, fontSize: 13.sp),
-                              hintText: 'Type and press Enter to add',
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: HexColor('4CA6A8')))),
-                          onFieldSubmitted: (value) {
-                            if (value.isNotEmpty) {
-                              controller.addQualification(value.trim());
-                              controller.qualificationInputController.clear();
-                            }
-                          },
-                        ),
-                        10.verticalSpace,
-                        Obx(
-                          () => Wrap(
-                            spacing: 8,
-                            children: controller.qualifications
-                                .map((qual) => Chip(
-                                      backgroundColor: Colors.white,
-                                      label: Text(qual),
-                                      deleteIcon: const Icon(Icons.close),
-                                      onDeleted: () =>
-                                          controller.qualifications.remove(qual),
-                                    ))
-                                .toList(),
-                          ),
-                        ),
-                      ],
-                    ),
+                  _buildTagInputField(
+                    context,
+                    'Type and press Enter to add',
+                    controller.qualificationInputController,
+                    controller.addQualification,
+                    controller.qualifications,
+                    'Please add at least one qualification',
                   ),
-                  Obx(
-                    () {
-                      if (controller.qualifications.isEmpty) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30).r,
-                          child: Text(
-                            'Please add at least one qualification',
-                            style: TextStyle(color: Colors.red, fontSize: 12.sp),
-                          ),
-                        );
-                      }
-                      return SizedBox.shrink();
-                    },
+                  _buildLabel('Skills'),
+                  _buildTagInputField(
+                    context,
+                    'Type and press Enter to add',
+                    controller.skillInputController,
+                    controller.addSkill,
+                    controller.skills,
+                    'Please add at least one skill',
                   ),
                   _buildLabel('Salary'),
                   _buildTextField(
@@ -160,10 +115,16 @@ class AddPosts extends StatelessWidget {
                   ),
                   20.verticalSpace,
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       if (controller.formKey.currentState!.validate() &&
-                          controller.qualifications.isNotEmpty) {
-                        controller.addJobToFirestore();
+                          controller.qualifications.isNotEmpty &&
+                          controller.skills.isNotEmpty) {
+                        await controller.addJobToFirestore();
+                        Get.snackbar('Success', 'Job added successfully!',
+                            backgroundColor: Colors.transparent,
+                            colorText: Colors.black);
+
+                        Navigator.pop(context);
                       }
                     },
                     child: Container(
@@ -243,6 +204,59 @@ class AddPosts extends StatelessWidget {
             enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: HexColor('4CA6A8')))),
         validator: validator,
+      ),
+    );
+  }
+
+  Widget _buildTagInputField(
+    BuildContext context,
+    String hintText,
+    TextEditingController inputController,
+    Function(String) onAdd,
+    RxList<String> list,
+    String errorMessage,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30).r,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextFormField(
+            controller: inputController,
+            decoration: InputDecoration(
+              hintText: hintText,
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: HexColor('4CA6A8')),
+              ),
+            ),
+            onFieldSubmitted: (value) {
+              if (value.isNotEmpty) {
+                onAdd(value.trim());
+                inputController.clear();
+              }
+            },
+          ),
+          10.verticalSpace,
+          Obx(
+            () => Wrap(
+              spacing: 8,
+              children: list
+                  .map((item) => Chip(
+                        backgroundColor: Colors.white,
+                        label: Text(item),
+                        deleteIcon: const Icon(Icons.close),
+                        onDeleted: () => list.remove(item),
+                      ))
+                  .toList(),
+            ),
+          ),
+          Obx(
+            () => list.isEmpty
+                ? Text(errorMessage,
+                    style: TextStyle(color: Colors.red, fontSize: 12.sp))
+                : SizedBox.shrink(),
+          ),
+        ],
       ),
     );
   }

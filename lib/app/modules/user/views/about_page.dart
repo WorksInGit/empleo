@@ -38,7 +38,6 @@ class AboutPage extends StatelessWidget {
                     ),
                   ),
                   70.verticalSpace,
-                  // Qualification
                   Row(
                     children: [
                       25.horizontalSpace,
@@ -68,7 +67,6 @@ class AboutPage extends StatelessWidget {
                     ),
                   ),
                   20.verticalSpace,
-                  // Experience
                   Row(
                     children: [
                       25.horizontalSpace,
@@ -97,7 +95,6 @@ class AboutPage extends StatelessWidget {
                     ),
                   ),
                   20.verticalSpace,
-                  // Skills
                   Row(
                     children: [
                       25.horizontalSpace,
@@ -129,44 +126,39 @@ class AboutPage extends StatelessWidget {
                     ),
                   ),
                   20.verticalSpace,
-
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30),
-                  child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Contact Number',
-                              style: GoogleFonts.poppins(
-                  
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            SizedBox(height: 8.h),
-                          TextFormField(
-                          obscureText: false,
-                        keyboardType: TextInputType.phone,
-                        maxLength: 10,
-                          decoration: InputDecoration(
-                            
-                        hintText: 'Phone Number',
-                        hintStyle: GoogleFonts.poppins(fontWeight: FontWeight.w200),
-                         enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: HexColor('4CA6A8'))),
-                        
-                        prefixIcon: Icon(Iconsax.mobile4),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Contact Number',
+                          style: GoogleFonts.poppins(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
                           ),
-                              onChanged: (value) => controller.phone.value = value,
-                                    validator: (value) =>
-                          controller.validateInput(value!, 'phone number'),
                         ),
-                        
-                          ],
+                        SizedBox(height: 8.h),
+                        TextFormField(
+                          obscureText: false,
+                          keyboardType: TextInputType.phone,
+                          maxLength: 10,
+                          decoration: InputDecoration(
+                            hintText: 'Phone Number',
+                            hintStyle: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w200),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: HexColor('4CA6A8'))),
+                            prefixIcon: Icon(Iconsax.mobile4),
+                          ),
+                          onChanged: (value) => controller.phone.value = value,
+                          validator: (value) =>
+                              controller.validateInput(value!, 'phone number'),
                         ),
-                ),
-                  // Location
-
+                      ],
+                    ),
+                  ),
                   Row(
                     children: [
                       25.horizontalSpace,
@@ -202,10 +194,8 @@ class AboutPage extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: HexColor('4CA6A8')),
                           onPressed: () {
-                            // Perform form validation
                             if (controller.formKey2.currentState?.validate() ??
                                 false) {
-                              // If validation passes, save about page data
                               controller.saveAboutPageData(uid);
                             }
                           },

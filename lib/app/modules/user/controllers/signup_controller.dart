@@ -6,11 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SignupController extends GetxController {
-  // Firebase instances
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Text Controllers for Signup Page
   var nameController = TextEditingController();
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
@@ -18,16 +16,12 @@ class SignupController extends GetxController {
   var qualificationController = TextEditingController();
   var experienceController = TextEditingController();
 
-
-  // Obscure Text Observables for Password Fields
   var isObscureText = true.obs;
   var isObscureText2 = true.obs;
 
-  // Form Key for Validation
   final formKey = GlobalKey<FormState>();
   final formKey2 = GlobalKey<FormState>();
 
-  // Observable variables for About Page
   var location = ''.obs;
   var qualification = ''.obs;
   var experience = ''.obs;
@@ -51,7 +45,6 @@ class SignupController extends GetxController {
     super.onClose();
   }
 
-  // Clear all input fields
   void clearAllControllers() {
     nameController.clear();
     emailController.clear();
@@ -61,11 +54,10 @@ class SignupController extends GetxController {
     experienceController.clear();
   }
 
-  // Toggle Password Visibility
   void toggleVisibility() => isObscureText.value = !isObscureText.value;
-  void toggleVisibilityConfirm() => isObscureText2.value = !isObscureText2.value;
+  void toggleVisibilityConfirm() =>
+      isObscureText2.value = !isObscureText2.value;
 
-  // Validation Helpers
   String? validateInput(String value, String field) {
     if (value.trim().isEmpty) {
       return 'Please enter your $field';
@@ -77,7 +69,6 @@ class SignupController extends GetxController {
     return passwordController.text.trim() == confirmPassController.text.trim();
   }
 
-  // Sign-Up and Save to Firestore
   Future<void> signUp(BuildContext context) async {
     if (!validatePasswords()) {
       Get.snackbar(
@@ -89,21 +80,19 @@ class SignupController extends GetxController {
     }
 
     if (formKey.currentState?.validate() ?? false) {
-      // Show Loading Dialog
       Get.dialog(
         Center(child: CircularProgressIndicator()),
         barrierDismissible: false,
       );
 
       try {
-        // Create User in Firebase Authentication
-        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        UserCredential userCredential =
+            await _auth.createUserWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         );
         print("User created: ${userCredential.user?.uid}");
 
-        // Save User Details to Firestore
         await _firestore.collection('users').doc(userCredential.user?.uid).set({
           'name': nameController.text.trim(),
           'email': emailController.text.trim(),
@@ -116,14 +105,14 @@ class SignupController extends GetxController {
           'createdAt': FieldValue.serverTimestamp(),
         });
 
-        // Close loading dialog and navigate to AboutPage
-        Get.back(); // Close loading dialog
-        Get.to(AboutPage(uid: userCredential.user!.uid,)); // Navigate to AboutPage
+        Get.back();
+        Get.to(AboutPage(
+          uid: userCredential.user!.uid,
+        ));
 
-        // Clear data from fields
         clearAllControllers();
       } on FirebaseAuthException catch (e) {
-        Get.back(); // Close loading dialog
+        Get.back();
         Get.snackbar(
           "Error",
           e.message ?? "An error occurred, please try again.",
@@ -135,10 +124,8 @@ class SignupController extends GetxController {
     }
   }
 
-  // Function to save AboutPage data to Firestore after Signup
   Future<void> saveAboutPageData(String uid) async {
     try {
-      // Save AboutPage details to Firestore
       await _firestore.collection('users').doc(uid).update({
         'location': location.value,
         'qualification': qualification.value,
@@ -149,7 +136,6 @@ class SignupController extends GetxController {
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      // Optional: Provide success feedback
       Get.snackbar(
         "Successfull",
         ".",

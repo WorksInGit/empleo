@@ -39,7 +39,6 @@ class CompanyLogin extends StatelessWidget {
                     style: GoogleFonts.poppins(fontSize: 16.sp),
                   ),
                   SizedBox(height: 30.h),
-                  // Email TextField
                   TextField(
                     decoration: InputDecoration(
                       labelText: 'Email Address',
@@ -51,7 +50,6 @@ class CompanyLogin extends StatelessWidget {
                     onChanged: (value) => controller.email.value = value,
                   ),
                   SizedBox(height: 20.h),
-                  // Password TextField
                   Obx(
                     () => TextFormField(
                       obscureText: controller.obscureText.value,
@@ -74,7 +72,6 @@ class CompanyLogin extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 30.h),
-                  // Login Button with Loading Spinner
                   SizedBox(
                     width: 340.w,
                     height: 60.h,
@@ -128,7 +125,6 @@ class CompanyLogin extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 20.h),
-                  // Register Button
                   SizedBox(
                     width: 340.w,
                     height: 60.h,

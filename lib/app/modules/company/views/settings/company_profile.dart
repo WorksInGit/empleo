@@ -21,46 +21,46 @@ class _CompanyProfileState extends State<CompanyProfile> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 30.h), // Adjusted with ScreenUtil
+            SizedBox(height: 30.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-               
-                SizedBox(width: 120.w), // Adjusted with ScreenUtil
+                SizedBox(width: 120.w),
                 Text(
                   'Profile',
                   style: GoogleFonts.poppins(
                       fontSize: 20.sp, fontWeight: FontWeight.w500),
                 ),
-                SizedBox(width: 30.w), // Adjusted with ScreenUtil
-                 IconButton(
+                SizedBox(width: 30.w),
+                IconButton(
                     onPressed: () {
                       Get.to(() => EditCompanyProfile());
                     },
                     icon: Icon(
-                    Iconsax.edit5, size: 30.sp,) )// Adjusted with ScreenUtil
-                
+                      Iconsax.edit5,
+                      size: 30.sp,
+                    ))
               ],
             ),
-            SizedBox(height: 30.h), // Adjusted with ScreenUtil
+            SizedBox(height: 30.h),
             CircleAvatar(
               backgroundColor: Colors.transparent,
-              radius: 60.r, // Adjusted with ScreenUtil
+              radius: 60.r,
               backgroundImage: AssetImage('assets/icons/google.png'),
             ),
-            SizedBox(height: 20.h), // Adjusted with ScreenUtil
+            SizedBox(height: 20.h),
             Row(
               children: [
-                SizedBox(width: 25.w), // Adjusted with ScreenUtil
+                SizedBox(width: 25.w),
                 Text(
                   'Company Name',
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
                 ),
               ],
             ),
-            SizedBox(height: 10.h), // Adjusted with ScreenUtil
+            SizedBox(height: 10.h),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30.w), // Adjusted with ScreenUtil
+              padding: EdgeInsets.symmetric(horizontal: 30.w),
               child: TextFormField(
                 decoration: InputDecoration(
                     label: Text(
@@ -71,19 +71,19 @@ class _CompanyProfileState extends State<CompanyProfile> {
                         borderSide: BorderSide(color: HexColor('4CA6A8')))),
               ),
             ),
-            SizedBox(height: 20.h), // Adjusted with ScreenUtil
+            SizedBox(height: 20.h),
             Row(
               children: [
-                SizedBox(width: 25.w), // Adjusted with ScreenUtil
+                SizedBox(width: 25.w),
                 Text(
                   'Email Address',
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
                 ),
               ],
             ),
-            SizedBox(height: 10.h), // Adjusted with ScreenUtil
+            SizedBox(height: 10.h),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30.w), // Adjusted with ScreenUtil
+              padding: EdgeInsets.symmetric(horizontal: 30.w),
               child: TextFormField(
                 decoration: InputDecoration(
                     label: Text(
@@ -94,19 +94,19 @@ class _CompanyProfileState extends State<CompanyProfile> {
                         borderSide: BorderSide(color: HexColor('4CA6A8')))),
               ),
             ),
-            SizedBox(height: 20.h), // Adjusted with ScreenUtil
+            SizedBox(height: 20.h),
             Row(
               children: [
-                SizedBox(width: 25.w), // Adjusted with ScreenUtil
+                SizedBox(width: 25.w),
                 Text(
                   'Contact Number',
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
                 ),
               ],
             ),
-            SizedBox(height: 10.h), // Adjusted with ScreenUtil
+            SizedBox(height: 10.h),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30.w), // Adjusted with ScreenUtil
+              padding: EdgeInsets.symmetric(horizontal: 30.w),
               child: TextFormField(
                 decoration: InputDecoration(
                     label: Text(
@@ -117,19 +117,19 @@ class _CompanyProfileState extends State<CompanyProfile> {
                         borderSide: BorderSide(color: HexColor('4CA6A8')))),
               ),
             ),
-            SizedBox(height: 20.h), // Adjusted with ScreenUtil
+            SizedBox(height: 20.h),
             Row(
               children: [
-                SizedBox(width: 25.w), // Adjusted with ScreenUtil
+                SizedBox(width: 25.w),
                 Text(
                   'Industry',
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
                 ),
               ],
             ),
-            SizedBox(height: 10.h), // Adjusted with ScreenUtil
+            SizedBox(height: 10.h),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30.w), // Adjusted with ScreenUtil
+              padding: EdgeInsets.symmetric(horizontal: 30.w),
               child: TextFormField(
                 decoration: InputDecoration(
                     label: Text(
@@ -140,19 +140,19 @@ class _CompanyProfileState extends State<CompanyProfile> {
                         borderSide: BorderSide(color: HexColor('4CA6A8')))),
               ),
             ),
-            SizedBox(height: 20.h), // Adjusted with ScreenUtil
+            SizedBox(height: 20.h),
             Row(
               children: [
-                SizedBox(width: 25.w), // Adjusted with ScreenUtil
+                SizedBox(width: 25.w),
                 Text(
                   'Location',
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
                 ),
               ],
             ),
-            SizedBox(height: 10.h), // Adjusted with ScreenUtil
-             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30.w), // Adjusted with ScreenUtil
+            SizedBox(height: 10.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30.w),
               child: TextFormField(
                 decoration: InputDecoration(
                     label: Text(
@@ -163,11 +163,10 @@ class _CompanyProfileState extends State<CompanyProfile> {
                         borderSide: BorderSide(color: HexColor('4CA6A8')))),
               ),
             ),
-            SizedBox(height: 20.h), // Adjusted with ScreenUtil
+            SizedBox(height: 20.h),
           ],
         ),
       ),
     );
   }
 }
-

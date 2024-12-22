@@ -15,25 +15,18 @@ class UserFeedback extends StatelessWidget {
           return FocusScope.of(context).unfocus();
         },
         child: Scaffold(
+          appBar: AppBar(
+            title: Text('Feedback', style: GoogleFonts.poppins(),),
+            centerTitle: true,
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+          ),
           backgroundColor: Colors.white,
           body: Padding(
             padding: EdgeInsets.all(16.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Feedback',
-                      style: GoogleFonts.poppins(
-                          fontSize: 20.sp, fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 30.h,
-                ),
                 Text(
                   "Give Feedback",
                   style:

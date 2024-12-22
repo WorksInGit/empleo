@@ -5,36 +5,69 @@ import 'package:get/get.dart';
 
 class AddJobController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final RxString selectedTiming = "Full-time".obs; // State for Timing Dropdown
+  final RxString selectedTiming = "Full-time".obs;
   final RxString selectedMode = "Office".obs;
-  final TextEditingController qualificationInputController =
-      TextEditingController();
+
+  final TextEditingController qualificationInputController = TextEditingController();
   final TextEditingController jobNameController = TextEditingController();
   final TextEditingController salaryController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
+  final TextEditingController skillInputController = TextEditingController();
+
   var qualifications = <String>[].obs;
+  var skills = <String>[].obs;
 
   void addQualification(String text) {
     qualifications.add(text);
   }
 
-  Future<void> addJobToFirestore() async {
-    try {
-      // Fetch company profile image
-      final companyImage = await fetchCompanyImage();
+  void addSkill(String text) {
+    skills.add(text);
+  }
 
-      // Add job details with company image
-      await FirebaseFirestore.instance.collection('jobs').add({
+  void clearAllControllers() {
+    jobNameController.clear();
+    qualificationInputController.clear();
+    salaryController.clear();
+    locationController.clear();
+    skillInputController.clear();
+    qualifications.clear();
+    skills.clear();
+    selectedTiming.value = "Full-time";
+    selectedMode.value = "Office";
+  }
+
+  Future<void> addJobToFirestore() async {
+    if (!formKey.currentState!.validate()) return;
+
+    try {
+      final companyDetails = await fetchCompanyDetails();
+      final companyName = companyDetails['companyName'];
+      final companyEmail = companyDetails['email'];
+      final photoUrl = companyDetails['photoUrl'];
+      final about = companyDetails['about'];
+      final uid = companyDetails['uid'];
+
+      final docRef = FirebaseFirestore.instance.collection('jobs').doc();
+
+      await docRef.set({
+        'jobId': docRef.id,
+        'uid': uid,
+        'companyName': companyName,
+        'companyEmail': companyEmail,
         'jobName': jobNameController.text.trim(),
         'qualifications': qualifications.toList(),
+        'skills': skills.toList(),
         'salary': salaryController.text.trim(),
         'timing': selectedTiming.value,
         'mode': selectedMode.value,
         'location': locationController.text.trim(),
-        'photoUrl': companyImage,
+        'photoUrl': photoUrl,
+        'about': about,
         'createdAt': FieldValue.serverTimestamp(),
       });
 
+      clearAllControllers();
       Get.snackbar('Success', 'Job added successfully!',
           backgroundColor: Colors.green, colorText: Colors.white);
     } catch (e) {
@@ -43,21 +76,29 @@ class AddJobController extends GetxController {
     }
   }
 
-  Future<String> fetchCompanyImage() async {
+  Future<Map<String, String>> fetchCompanyDetails() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        // Fetch company data from Firestore
         final doc = await FirebaseFirestore.instance
             .collection('companies')
-            .doc(user.uid) // Assuming the company's data is stored by user UID
+            .doc(user.uid)
             .get();
-        return doc.data()?['photoUrl'] ??
-            ''; // 'photoUrl' is the field containing the image URL
+
+        if (doc.exists) {
+          final data = doc.data();
+          return {
+            'photoUrl': data?['photoUrl'] ?? '',
+            'companyName': data?['companyName'] ?? '',
+            'about': data?['about'] ?? '',
+            'email': data?['email'] ?? '',
+            'uid': user.uid
+          };
+        }
       }
     } catch (e) {
-      print('Error fetching company image: $e');
+      print('Error fetching company details: $e');
     }
-    return ''; // Return an empty string if no image is found
+    return {'photoUrl': '', 'companyName': ''};
   }
 }

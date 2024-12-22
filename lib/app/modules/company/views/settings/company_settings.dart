@@ -15,20 +15,17 @@ class CompanySettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Settings'),
+        titleTextStyle: GoogleFonts.poppins(
+            fontSize: 20.sp, fontWeight: FontWeight.w500, color: Colors.black),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        backgroundColor: const Color.fromARGB(255, 244, 243, 243),
+      ),
       backgroundColor: Color.fromARGB(255, 244, 243, 243),
       body: Column(
         children: [
-          SizedBox(height: 15.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Settings',
-                style: GoogleFonts.poppins(
-                    fontSize: 20.sp, fontWeight: FontWeight.w500),
-              ),
-            ],
-          ),
           SizedBox(height: 20.h),
           Padding(
             padding: EdgeInsets.all(15.w),

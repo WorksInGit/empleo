@@ -48,7 +48,8 @@ class CompanyRegister extends StatelessWidget {
                         () => CircleAvatar(
                           radius: 50.r,
                           backgroundColor: Colors.transparent,
-                          backgroundImage: controller.profileImageUrl.value.isNotEmpty
+                          backgroundImage: controller
+                                  .profileImageUrl.value.isNotEmpty
                               ? NetworkImage(controller.profileImageUrl.value)
                               : null,
                           child: controller.profileImageUrl.value.isEmpty
@@ -67,8 +68,9 @@ class CompanyRegister extends StatelessWidget {
                     label: 'Company Name',
                     hintText: 'Enter your company name',
                     onChanged: (value) => controller.companyName.value = value,
-                    validator: (value) =>
-                        value == null || value.isEmpty ? 'Field required' : null,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Field required'
+                        : null,
                   ),
                   SizedBox(height: 16.h),
                   _buildTextField(
@@ -85,17 +87,20 @@ class CompanyRegister extends StatelessWidget {
                     hintText: 'Enter your password',
                     obscureText: true,
                     onChanged: (value) => controller.password.value = value,
-                    validator: (value) =>
-                        value == null || value.length < 6 ? 'Min 6 characters' : null,
+                    validator: (value) => value == null || value.length < 6
+                        ? 'Min 6 characters'
+                        : null,
                   ),
                   SizedBox(height: 16.h),
                   _buildTextField(
                     label: 'Confirm Password',
                     hintText: 'Re-enter your password',
                     obscureText: true,
-                    onChanged: (value) => controller.confirmPassword.value = value,
-                    validator: (value) =>
-                        value != controller.password.value ? 'Passwords do not match' : null,
+                    onChanged: (value) =>
+                        controller.confirmPassword.value = value,
+                    validator: (value) => value != controller.password.value
+                        ? 'Passwords do not match'
+                        : null,
                   ),
                   SizedBox(height: 16.h),
                   _buildTextField(
@@ -104,8 +109,9 @@ class CompanyRegister extends StatelessWidget {
                     keyboardType: TextInputType.phone,
                     maxLength: 10,
                     onChanged: (value) => controller.contactNo.value = value,
-                    validator: (value) =>
-                        value == null || value.length != 10 ? 'Invalid number' : null,
+                    validator: (value) => value == null || value.length != 10
+                        ? 'Invalid number'
+                        : null,
                   ),
                   SizedBox(height: 16.h),
                   _buildTextField(
@@ -124,8 +130,9 @@ class CompanyRegister extends StatelessWidget {
                     label: 'Location',
                     hintText: 'Eg: Andheri, Mumbai',
                     onChanged: (value) => controller.location.value = value,
-                    validator: (value) =>
-                        value == null || value.isEmpty ? 'Field required' : null,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Field required'
+                        : null,
                   ),
                   SizedBox(height: 24.h),
                   SizedBox(

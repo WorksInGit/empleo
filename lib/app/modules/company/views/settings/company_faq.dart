@@ -41,7 +41,6 @@ class CompanyFaq extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              
               Text(
                 'Company FAQ',
                 style: GoogleFonts.poppins(

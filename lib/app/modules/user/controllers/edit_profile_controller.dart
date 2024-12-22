@@ -63,9 +63,9 @@ class EditProfileController extends GetxController {
       });
 
       Get.snackbar("Success", "Profile updated successfully",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white);
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.transparent,
+          colorText: Colors.black);
     } catch (e) {
       Get.snackbar("Error", "Failed to update profile",
           snackPosition: SnackPosition.BOTTOM,
