@@ -1,22 +1,33 @@
 import 'package:empleo/app/common/landing_page.dart';
+import 'package:empleo/app/modules/user/views/user_bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Future.delayed(
-      const Duration(seconds: 3),
-      () {
-        Get.offAll(() => LandingPage(),
-          transition: Transition.fade,
-          duration: const Duration(milliseconds: 2000),
-        );
+      const Duration(seconds: 1),
+      () async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+        if (isLoggedIn) {
+          Get.offAll(() => BottomNav(),
+              transition: Transition.fade,
+              duration: const Duration(milliseconds: 2000));
+        } else {
+          Get.offAll(() => LandingPage(),
+              transition: Transition.fade,
+              duration: const Duration(milliseconds: 2000));
+        }
       },
     );
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,

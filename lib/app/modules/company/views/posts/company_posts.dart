@@ -93,7 +93,7 @@ class YourPosts extends StatelessWidget {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('jobs')
-          .where('uid', isEqualTo: companyId)
+          .where('companyUid', isEqualTo: companyId)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -197,25 +197,52 @@ class YourPosts extends StatelessWidget {
                             () {
                               if (controller.showText.value) {
                                 return IconButton(
-                                    onPressed: () async {
+                                  onPressed: () async {
+                                    try {
+                                      QuerySnapshot applicationsSnapshot =
+                                          await FirebaseFirestore.instance
+                                              .collection('jobApplications')
+                                              .where('jobId', isEqualTo: job.id)
+                                              .get();
+
+                                      for (var application
+                                          in applicationsSnapshot.docs) {
+                                        await FirebaseFirestore.instance
+                                            .collection('jobApplications')
+                                            .doc(application.id)
+                                            .delete();
+                                      }
+
                                       await FirebaseFirestore.instance
                                           .collection('jobs')
                                           .doc(job.id)
                                           .delete();
+
                                       Get.snackbar(
                                         'Success',
-                                        'Job deleted successfully.',
+                                        'Job post deleted successfully.',
                                         backgroundColor: Colors.transparent,
                                         colorText: Colors.black,
                                       );
+
+                                      // Update controller value
                                       controller.showText.value = false;
-                                    },
-                                    icon: Icon(
-                                      Icons.delete,
-                                      color: Colors.red,
-                                    ));
+                                    } catch (e) {
+                                      Get.snackbar(
+                                        'Error',
+                                        'Failed to delete job post: $e',
+                                        backgroundColor: Colors.transparent,
+                                        colorText: Colors.red,
+                                      );
+                                    }
+                                  },
+                                  icon: Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                );
                               } else {
-                                return SizedBox();
+                                return const SizedBox();
                               }
                             },
                           ),
@@ -252,12 +279,11 @@ class ShortListed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ButtonController controller = Get.put(ButtonController());
     final String companyId = FirebaseAuth.instance.currentUser!.uid;
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('jobs')
-          .where('uid', isEqualTo: companyId)
+          .where('companyUid', isEqualTo: companyId)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {

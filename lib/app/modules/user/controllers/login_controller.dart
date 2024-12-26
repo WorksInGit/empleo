@@ -1,29 +1,35 @@
-import 'package:empleo/app/modules/user/views/user_login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import '../services/auth_service.dart';
+import '../views/user_bottom_nav.dart';
 
 class LoginController extends GetxController {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
   var isLoading = false.obs;
 
-  Future<User?> loginWithEmailAndPassword(String email, String password) async {
+  Future<void> login(String email, String password) async {
+    isLoading.value = true;
     try {
-      final UserCredential userCredential =
-          await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      return userCredential.user;
+      final user = await AuthService().loginWithEmailAndPassword(email, password);
+      if (user != null) {
+        Get.offAll(() => BottomNav());
+      }
     } catch (e) {
-      Get.snackbar('Login Failed', e.toString(),
-          snackPosition: SnackPosition.BOTTOM);
-      return null;
+      Get.snackbar('Error', e.toString(), snackPosition: SnackPosition.BOTTOM);
+    } finally {
+      isLoading.value = false;
     }
   }
 
-  Future<void> logout() async {
-    await _auth.signOut();
-    Get.off(UserLogin());
+  Future<void> loginWithGoogle() async {
+    isLoading.value = true;
+    try {
+      final user = await AuthService().signInWithGoogle();
+      if (user != null) {
+        Get.offAll(() => BottomNav());
+      }
+    } catch (e) {
+      Get.snackbar('Error', e.toString(), snackPosition: SnackPosition.BOTTOM);
+    } finally {
+      isLoading.value = false;
+    }
   }
 }

@@ -1,5 +1,4 @@
 import 'package:empleo/app/common/user_feedback.dart';
-import 'package:empleo/app/modules/user/controllers/login_controller.dart';
 import 'package:empleo/app/modules/user/services/auth_service.dart';
 import 'package:empleo/app/modules/user/views/settings/about_app.dart';
 import 'package:empleo/app/modules/user/views/settings/user_faq.dart';
@@ -12,8 +11,7 @@ import 'package:iconsax/iconsax.dart';
 
 class SettingsPage extends StatelessWidget {
   SettingsPage({super.key});
-  final AuthService authService = AuthService();
-  final LoginController controller = Get.put(LoginController());
+  final AuthService controller = Get.put(AuthService());
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -165,7 +163,7 @@ class SettingsPage extends StatelessWidget {
                       SizedBox(height: 20.h),
                       GestureDetector(
                         onTap: () async {
-                          controller.logout();
+                          controller.logOut();
                         },
                         child: Container(
                           width: 250.w,

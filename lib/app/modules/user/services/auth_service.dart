@@ -1,17 +1,41 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:empleo/app/common/selection_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
+  Future<void> saveLoginState(String uid) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', true);
+    await prefs.setString('uid', uid);
+  }
+
+  Future<User?> loginWithEmailAndPassword(String email, String password) async {
+    try {
+      final UserCredential userCredential =
+          await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      await saveLoginState(userCredential.user!.uid);
+      return userCredential.user;
+    } catch (e) {
+      Get.snackbar('Login Failed', e.toString(),
+          snackPosition: SnackPosition.BOTTOM);
+      return null;
+    }
+  }
+
   Future<User?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        print("Google Sign-In canceled by user");
         return null;
       }
 
@@ -36,51 +60,24 @@ class AuthService {
             'email': user.email,
             'photoUrl': user.photoURL,
           });
-          print("New user added to Firestore");
-        } else {
-          print("User already exists in Firestore");
         }
+        await saveLoginState(user.uid);
       }
       return user;
     } catch (e) {
-      print("Error during Google Sign-In: $e");
       return null;
     }
   }
 
-  Future<User?> signInWithEmailAndPassword(
-      String email, String password) async {
-    try {
-      final UserCredential userCredential =
-          await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      final User? user = userCredential.user;
-
-      if (user != null) {
-        final DocumentSnapshot userDoc =
-            await _firestore.collection('users').doc(user.uid).get();
-        if (userDoc.exists) {
-          print("User exists in Firestore");
-        } else {
-          print("User data not found in Firestore");
-        }
-      }
-      return user;
-    } catch (e) {
-      print("Error during email/password sign-in: $e");
-      return null;
-    }
-  }
-
-  Future<void> signOut() async {
+  Future<void> logOut() async {
     try {
       await _auth.signOut();
       if (await _googleSignIn.isSignedIn()) {
         await _googleSignIn.signOut();
       }
-      print("User signed out successfully");
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', false);
+      Get.offAll(() => SelectionPage());
     } catch (e) {
       print("Error during sign-out: $e");
     }

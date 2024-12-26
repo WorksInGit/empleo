@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:empleo/app/modules/company/views/posts/hire_shortlisted.dart';
 import 'package:empleo/app/modules/company/views/posts/shortlisted_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -144,109 +145,60 @@ class CompanyShortlistedApplications extends StatelessWidget {
                                       final photoUrl =
                                           application['photoUrl'] ??
                                               'assets/images/default_user.png';
-                                      return GestureDetector(
-                                        onTap: () {
-                                          Get.to(
-                                            ShortlistedProfile(
-                                                applicantId: application.id),
-                                            transition: Transition.cupertino,
-                                            duration:
-                                                Duration(milliseconds: 500),
-                                          );
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Container(
-                                            padding: EdgeInsets.all(12.w),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(12.r),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.grey
-                                                      .withOpacity(0.1),
-                                                  blurRadius: 10,
-                                                  offset: const Offset(0, 5),
-                                                ),
-                                              ],
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  width: 40.r,
-                                                  height: 40.r,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    image: DecorationImage(
-                                                      image: photoUrl
-                                                              .startsWith(
-                                                                  'http')
-                                                          ? NetworkImage(
-                                                              photoUrl)
-                                                          : AssetImage(photoUrl)
-                                                              as ImageProvider,
-                                                      fit: BoxFit.cover,
-                                                    ),
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          padding: EdgeInsets.all(12.w),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(12.r),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey
+                                                    .withOpacity(0.1),
+                                                blurRadius: 10,
+                                                offset: const Offset(0, 5),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                width: 40.r,
+                                                height: 40.r,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  image: DecorationImage(
+                                                    image: photoUrl
+                                                            .startsWith(
+                                                                'http')
+                                                        ? NetworkImage(
+                                                            photoUrl)
+                                                        : AssetImage(photoUrl)
+                                                            as ImageProvider,
+                                                    fit: BoxFit.cover,
                                                   ),
                                                 ),
-                                                SizedBox(width: 16.w),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        applicantName,
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                          fontSize: 16.sp,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        qualification,
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                          fontSize: 14.sp,
-                                                          color: Colors.black54,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Column(
+                                              ),
+                                              SizedBox(width: 16.w),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment
+                                                          .start,
                                                   children: [
-                                                    application['points'] != 0
-                                                        ? Row(
-                                                            children: [
-                                                              Text(
-                                                                application[
-                                                                        'points']
-                                                                    .toString(),
-                                                                style:
-                                                                    GoogleFonts
-                                                                        .poppins(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
-                                                              SizedBox(
-                                                                  width: 2.w),
-                                                              Icon(
-                                                                Iconsax.star1,
-                                                                color: Colors
-                                                                    .amber,
-                                                                size: 17.sp,
-                                                              )
-                                                            ],
-                                                          )
-                                                        : SizedBox.shrink(),
                                                     Text(
-                                                      location,
+                                                      applicantName,
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                        fontSize: 16.sp,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      qualification,
                                                       style:
                                                           GoogleFonts.poppins(
                                                         fontSize: 14.sp,
@@ -255,8 +207,46 @@ class CompanyShortlistedApplications extends StatelessWidget {
                                                     ),
                                                   ],
                                                 ),
-                                              ],
-                                            ),
+                                              ),
+                                              Column(
+                                                children: [
+                                                  application['points'] != 0
+                                                      ? Row(
+                                                          children: [
+                                                            Text(
+                                                              application[
+                                                                      'points']
+                                                                  .toString(),
+                                                              style:
+                                                                  GoogleFonts
+                                                                      .poppins(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                                width: 2.w),
+                                                            Icon(
+                                                              Iconsax.star1,
+                                                              color: Colors
+                                                                  .amber,
+                                                              size: 17.sp,
+                                                            )
+                                                          ],
+                                                        )
+                                                      : SizedBox.shrink(),
+                                                  Text(
+                                                    location,
+                                                    style:
+                                                        GoogleFonts.poppins(
+                                                      fontSize: 14.sp,
+                                                      color: Colors.black54,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       );
@@ -288,15 +278,22 @@ class CompanyShortlistedApplications extends StatelessWidget {
                                       final photoUrl =
                                           application['photoUrl'] ??
                                               'assets/images/default_user.png';
+                                      final points = application['points'];
                                       return GestureDetector(
                                         onTap: () {
-                                          Get.to(
-                                            ShortlistedProfile(
-                                                applicantId: application.id),
-                                            transition: Transition.cupertino,
-                                            duration:
-                                                Duration(milliseconds: 500),
-                                          );
+                                          points == 0
+                                              ? Get.to(
+                                                  ShortlistedProfile(
+                                                      applicantId:
+                                                          application.id),
+                                                  transition:
+                                                      Transition.cupertino,
+                                                  duration: const Duration(
+                                                      milliseconds: 500),
+                                                )
+                                              : Get.to(() => HireShortListed(
+                                                    applicantId: application.id,
+                                                  ));
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),

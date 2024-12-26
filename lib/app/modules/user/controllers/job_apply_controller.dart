@@ -57,7 +57,7 @@ class JobApplyController extends GetxController {
           'message': messageController.text,
           'cvUrl': cvUrl,
           'timestamp': Timestamp.now(),
-          'point': 0,
+          'points': 0,
           'status': 0
         });
 

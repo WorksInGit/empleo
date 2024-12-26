@@ -1,17 +1,14 @@
-import 'package:empleo/app/modules/user/controllers/login_controller.dart';
-import 'package:empleo/app/modules/user/services/auth_service.dart';
-import 'package:empleo/app/modules/user/views/user_bottom_nav.dart';
-import 'package:empleo/app/modules/user/views/user_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import '../controllers/login_controller.dart';
+import 'user_signup.dart';
 
 class UserLogin extends StatelessWidget {
   UserLogin({super.key});
 
-  final AuthService authService = Get.put(AuthService());
   final LoginController loginController = Get.put(LoginController());
 
   final TextEditingController emailController = TextEditingController();
@@ -89,22 +86,12 @@ class UserLogin extends StatelessWidget {
                   ),
                   SizedBox(height: 30.h),
                   GestureDetector(
-                    onTap: () async {
+                    onTap: () {
                       if (_formKey.currentState!.validate()) {
-                        loginController.isLoading.value = true;
-                        final user =
-                            await loginController.loginWithEmailAndPassword(
+                        loginController.login(
                           emailController.text.trim(),
                           passwordController.text.trim(),
                         );
-                        loginController.isLoading.value = false;
-                        if (user != null) {
-                          Get.off(
-                            BottomNav(),
-                            transition: Transition.cupertino,
-                            duration: Duration(milliseconds: 500),
-                          );
-                        }
                       }
                     },
                     child: Obx(() {
@@ -133,42 +120,9 @@ class UserLogin extends StatelessWidget {
                     }),
                   ),
                   SizedBox(height: 20.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 30.w,
-                        height: 1.h,
-                        color: Colors.black,
-                      ),
-                      SizedBox(width: 10.w),
-                      Text('Or Continue with'),
-                      SizedBox(width: 10.w),
-                      Container(
-                        width: 30.w,
-                        height: 1.h,
-                        color: Colors.black,
-                      ),
-                    ],
-                  ),
                   GestureDetector(
-                    onTap: () async {
-                      final user = await authService.signInWithGoogle();
-                      if (user != null) {
-                        Get.to(
-                          () => BottomNav(),
-                          transition: Transition.cupertino,
-                          duration: Duration(milliseconds: 500),
-                        );
-                      } else {
-                        Get.snackbar(
-                          'Error',
-                          'Google Sign-In failed',
-                          snackPosition: SnackPosition.BOTTOM,
-                          backgroundColor: Colors.redAccent,
-                          colorText: Colors.white,
-                        );
-                      }
+                    onTap: () {
+                      loginController.loginWithGoogle();
                     },
                     child: Container(
                       width: 50.w,
@@ -183,27 +137,16 @@ class UserLogin extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        "Don't have an account? ",
-                        style: GoogleFonts.poppins(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14.sp,
-                        ),
-                      ),
+                      Text("Don't have an account? "),
                       TextButton(
                         onPressed: () {
-                          Get.to(() => UserSignUp())!.then((_) {
-                            emailController.clear();
-                            passwordController.clear();
-                          });
+                          Get.to(() => UserSignUp());
                         },
                         child: Text(
                           "Sign Up",
                           style: GoogleFonts.poppins(
                             color: HexColor('4CA6A8'),
                             fontWeight: FontWeight.bold,
-                            fontSize: 14.sp,
                           ),
                         ),
                       ),

@@ -107,7 +107,6 @@ class HomePage extends StatelessWidget {
                                   color: HexColor('4CA6A8')),
                             );
                           }
-
                           var jobs = jobsSnapshot.data?.docs ?? [];
                           var recommendedJobs = jobs.where((job) {
                             var jobSkills = job['skills'] is List
@@ -119,7 +118,6 @@ class HomePage extends StatelessWidget {
                                 : <String>[];
                             return jobSkills.contains(userSkill);
                           }).toList();
-
                           if (recommendedJobs.isEmpty) {
                             recommendedJobs = jobs.take(3).toList();
                           }
@@ -295,42 +293,59 @@ class RecentJobCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
+      padding: EdgeInsets.symmetric(horizontal: 15.w),
       child: Container(
-        width: 370.w,
-        height: 65.h,
+        margin: EdgeInsets.only(bottom: 16.h),
+        padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
           color: Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
         ),
         child: Row(
           children: [
-            SizedBox(width: 20.w),
             CircleAvatar(
+              radius: 24.r,
               backgroundColor: Colors.transparent,
-              backgroundImage: NetworkImage(jobData['photoUrl']),
-              radius: 20.r,
+              backgroundImage: jobData['photoUrl'].isNotEmpty
+                  ? NetworkImage(jobData['photoUrl'])
+                  : const AssetImage('assets/icons/facebook.png') as ImageProvider,
             ),
-            SizedBox(width: 20.w),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(jobData['jobName'],
-                    style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-                Text(jobData['mode'],
-                    style: GoogleFonts.poppins(fontWeight: FontWeight.w300)),
-              ],
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    jobData['jobName'],
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    jobData['mode'],
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.black54,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
-            const Spacer(),
-            Row(
-              children: [
-                Icon(Icons.currency_rupee_sharp, size: 13.sp),
-                Text('${jobData['salary']}/m',
-                    style: GoogleFonts.poppins(fontSize: 14.sp)),
-              ],
+            SizedBox(width: 12.w),
+            Text(
+              "₹${jobData['salary']}/Month",
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
-            SizedBox(width: 20.w),
           ],
         ),
       ),

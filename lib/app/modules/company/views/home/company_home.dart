@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:empleo/app/modules/company/controllers/add_job_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -9,12 +11,17 @@ class CompanyHome extends StatelessWidget {
   CompanyHome({super.key});
 
   final AddJobController controller = Get.put(AddJobController());
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final TextEditingController searchController = TextEditingController();
+  final RxString searchQuery = ''.obs;
 
   @override
   Widget build(BuildContext context) {
+    final String? companyUid = FirebaseAuth.instance.currentUser?.uid;
+
     return GestureDetector(
       onTap: () {
-        return FocusScope.of(context).unfocus();
+        FocusScope.of(context).unfocus();
       },
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 244, 243, 243),
@@ -56,10 +63,21 @@ class CompanyHome extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildStatCard('29', 'Job Posts', 'assets/images/vector.png'),
+                  FutureBuilder<int>(
+                    future: _getJobsCount(companyUid!),
+                    builder: (context, snapshot) {
+                      final count = snapshot.data?.toString() ?? '0';
+                      return _buildStatCard(count, 'Job Posts', 'assets/images/vector.png');
+                    },
+                  ),
                   SizedBox(width: 20.w),
-                  _buildStatCard(
-                      '3', 'Applications', 'assets/images/vector2.png'),
+                  FutureBuilder<int>(
+                    future: _getApplicationsCount(companyUid),
+                    builder: (context, snapshot) {
+                      final count = snapshot.data?.toString() ?? '0';
+                      return _buildStatCard(count, 'Applications', 'assets/images/vector2.png');
+                    },
+                  ),
                 ],
               ),
               SizedBox(height: 24.h),
@@ -73,12 +91,39 @@ class CompanyHome extends StatelessWidget {
               ),
               SizedBox(height: 16.h),
               Expanded(
-                child: ListView.builder(
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return _buildJobPostCard();
-                  },
-                ),
+                child: Obx(() {
+                  final query = searchQuery.value.toLowerCase();
+                  return StreamBuilder<QuerySnapshot>(
+                    stream: _getJobPosts(companyUid),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError || !snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return const Center(child: Text("No job posts available."));
+                      } else {
+                        final jobPosts = snapshot.data!.docs
+                            .where((doc) {
+                              final job = doc.data() as Map<String, dynamic>;
+                              final jobName = (job['jobName'] ?? '').toString().toLowerCase();
+                              return jobName.contains(query);
+                            })
+                            .toList();
+                        return ListView.builder(
+                          itemCount: jobPosts.length,
+                          itemBuilder: (context, index) {
+                            final job = jobPosts[index].data() as Map<String, dynamic>;
+                            return _buildJobPostCard(
+                              job['photoUrl'] ?? 'N/A',
+                              job['jobName'] ?? 'N/A',
+                              job['timing'] ?? 'N/A',
+                              job['salary'] ?? 'N/A',
+                            );
+                          },
+                        );
+                      }
+                    },
+                  );
+                }),
               ),
             ],
           ),
@@ -87,8 +132,35 @@ class CompanyHome extends StatelessWidget {
     );
   }
 
+  Future<int> _getJobsCount(String companyUid) async {
+    final snapshot = await _firestore
+        .collection('jobs')
+        .where('companyUid', isEqualTo: companyUid)
+        .get();
+    return snapshot.docs.length;
+  }
+
+  Future<int> _getApplicationsCount(String companyUid) async {
+    final snapshot = await _firestore
+        .collection('jobApplications')
+        .where('companyUid', isEqualTo: companyUid)
+        .get();
+    return snapshot.docs.length;
+  }
+
+  Stream<QuerySnapshot> _getJobPosts(String companyUid) {
+    return _firestore
+        .collection('jobs')
+        .where('companyUid', isEqualTo: companyUid)
+        .snapshots();
+  }
+
   Widget _buildSearchBar() {
     return TextField(
+      controller: searchController,
+      onChanged: (value) {
+        searchQuery.value = value;
+      },
       decoration: InputDecoration(
         fillColor: Colors.white,
         filled: true,
@@ -153,7 +225,7 @@ class CompanyHome extends StatelessWidget {
     );
   }
 
-  Widget _buildJobPostCard() {
+  Widget _buildJobPostCard(String photoUrl, String title, String type, String salary) {
     return Container(
       margin: EdgeInsets.only(bottom: 16.h),
       padding: EdgeInsets.all(12.w),
@@ -173,7 +245,9 @@ class CompanyHome extends StatelessWidget {
           CircleAvatar(
             radius: 24.r,
             backgroundColor: Colors.transparent,
-            backgroundImage: const AssetImage('assets/icons/facebook.png'),
+            backgroundImage: photoUrl.isNotEmpty
+                ? NetworkImage(photoUrl)
+                : AssetImage('assets/icons/facebook.png') as ImageProvider,
           ),
           SizedBox(width: 12.w),
           Expanded(
@@ -181,7 +255,7 @@ class CompanyHome extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Ui/Ux Designer",
+                  title,
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
@@ -190,7 +264,7 @@ class CompanyHome extends StatelessWidget {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  "Full Time",
+                  type,
                   style: TextStyle(
                     fontSize: 14.sp,
                     color: Colors.black54,
@@ -201,7 +275,7 @@ class CompanyHome extends StatelessWidget {
           ),
           SizedBox(width: 12.w),
           Text(
-            "\$4500/Month",
+            "\$$salary/Month",
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w500,

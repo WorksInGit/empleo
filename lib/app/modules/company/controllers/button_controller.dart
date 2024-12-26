@@ -16,8 +16,8 @@ class ButtonController extends GetxController {
     Get.snackbar(
       'Success',
       'Application status updated successfully.',
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
+      backgroundColor: Colors.transparent,
+      colorText: Colors.black,
     );
   } catch (e) {
     Get.snackbar(

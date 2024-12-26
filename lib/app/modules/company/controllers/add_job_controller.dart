@@ -46,13 +46,13 @@ class AddJobController extends GetxController {
       final companyEmail = companyDetails['email'];
       final photoUrl = companyDetails['photoUrl'];
       final about = companyDetails['about'];
-      final uid = companyDetails['uid'];
+      final uid = companyDetails['companyUid'];
 
       final docRef = FirebaseFirestore.instance.collection('jobs').doc();
 
       await docRef.set({
         'jobId': docRef.id,
-        'uid': uid,
+        'companyUid': uid,
         'companyName': companyName,
         'companyEmail': companyEmail,
         'jobName': jobNameController.text.trim(),
@@ -92,7 +92,7 @@ class AddJobController extends GetxController {
             'companyName': data?['companyName'] ?? '',
             'about': data?['about'] ?? '',
             'email': data?['email'] ?? '',
-            'uid': user.uid
+            'companyUid': user.uid
           };
         }
       }

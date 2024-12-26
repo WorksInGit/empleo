@@ -100,7 +100,7 @@ class SignupController extends GetxController {
           'location': location.value,
           'qualification': qualification.value,
           'experience': experience.value,
-          'skills': skills.value,
+          'skills': skills,
           'phone': phone.value,
           'createdAt': FieldValue.serverTimestamp(),
         });
@@ -130,7 +130,7 @@ class SignupController extends GetxController {
         'location': location.value,
         'qualification': qualification.value,
         'experience': experience.value,
-        'skills': skills.value,
+        'skills': skills,
         'phone': int.parse(phone.value),
         'photoUrl': '',
         'updatedAt': FieldValue.serverTimestamp(),
