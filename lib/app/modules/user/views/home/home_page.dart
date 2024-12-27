@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:empleo/app/modules/user/controllers/home_controller.dart';
 import 'package:empleo/app/modules/user/views/home/apply_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -8,13 +8,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final HomeController controller = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    final userUid = user?.uid;
-
     return SafeArea(
       child: GestureDetector(
         onTap: () {
@@ -22,153 +19,127 @@ class HomePage extends StatelessWidget {
         },
         child: Scaffold(
           backgroundColor: const Color.fromARGB(255, 244, 243, 243),
-          body: StreamBuilder<DocumentSnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('users')
-                .doc(userUid)
-                .snapshots(),
-            builder: (context, userSnapshot) {
-              if (userSnapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(color: HexColor('4CA6A8')),
-                );
-              }
-
-              if (!userSnapshot.hasData || userSnapshot.data == null) {
-                return Center(child: Text('User data not found.'));
-              }
-
-              var userData = userSnapshot.data!;
-              String profileUrl = userData['photoUrl'] ?? '';
-              String userSkill;
-              if (userData['skills'] is List) {
-                userSkill = (userData['skills'] as List).join(', ');
-              } else {
-                userSkill = userData['skills'] ?? '';
-              }
-
-              return SingleChildScrollView(
-                child: Column(
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 20.h),
+                Row(
                   children: [
-                    SizedBox(height: 20.h),
-                    Row(
-                      children: [
-                        SizedBox(width: 20.w),
-                        Text(
-                          'Hello ${userData['name']} 👋',
-                          style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w600, fontSize: 20.sp),
-                        ),
-                        const Spacer(),
-                        CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          radius: 23,
-                          backgroundImage: profileUrl.isNotEmpty
-                              ? NetworkImage(profileUrl)
-                              : const AssetImage('assets/icons/person.png')
-                                  as ImageProvider,
-                        ),
-                        SizedBox(width: 20.w),
-                      ],
+                    SizedBox(width: 20.w),
+                    Text(
+                      'Hello ${controller.user?.displayName} 👋',
+                      style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600, fontSize: 20.sp),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 10),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          label:
-                              Text('Search here', style: GoogleFonts.poppins()),
-                          suffixIcon: const Icon(Icons.search),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        ),
-                      ),
+                    const Spacer(),
+                    CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      radius: 23,
+                      backgroundImage: controller.user?.photoURL != null
+                          ? NetworkImage(controller.user!.photoURL!)
+                          : const AssetImage('assets/icons/person.png')
+                              as ImageProvider,
                     ),
-                    SectionTitle(
-                      title: 'Recommended For You',
-                      onShowAllPressed: () {},
-                    ),
-                    SizedBox(
-                      height: 200.h,
-                      child: StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('jobs')
-                            .orderBy('createdAt', descending: true)
-                            .snapshots(),
-                        builder: (context, jobsSnapshot) {
-                          if (jobsSnapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Center(
-                              child: CircularProgressIndicator(
-                                  color: HexColor('4CA6A8')),
-                            );
-                          }
-                          var jobs = jobsSnapshot.data?.docs ?? [];
-                          var recommendedJobs = jobs.where((job) {
-                            var jobSkills = job['skills'] is List
-                                ? List<String>.from(
-                                    (job['skills'] as List).map((e) {
-                                      return e.toString();
-                                    }),
-                                  )
-                                : <String>[];
-                            return jobSkills.contains(userSkill);
-                          }).toList();
-                          if (recommendedJobs.isEmpty) {
-                            recommendedJobs = jobs.take(3).toList();
-                          }
-
-                          return ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: recommendedJobs.length,
-                            itemBuilder: (context, index) {
-                              var job = recommendedJobs[index];
-                              return JobCard(jobData: job);
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                    SizedBox(height: 20.h),
-                    SectionTitle(
-                      title: 'Recent Posts',
-                      onShowAllPressed: () {},
-                    ),
-                    StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('jobs')
-                          .orderBy('createdAt', descending: false)
-                          .limit(5)
-                          .snapshots(),
-                      builder: (context, recentJobsSnapshot) {
-                        if (recentJobsSnapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                                color: HexColor('4CA6A8')),
-                          );
-                        }
-
-                        var recentJobs = recentJobsSnapshot.data?.docs ?? [];
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: recentJobs.length,
-                          itemBuilder: (context, index) {
-                            var job = recentJobs[index];
-                            return RecentJobCard(jobData: job);
-                          },
-                        );
-                      },
-                    ),
+                    SizedBox(width: 20.w),
                   ],
                 ),
-              );
-            },
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  child: TextField(
+                    onChanged: controller.searchJobs,
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.r),
+                        borderSide: BorderSide(
+                          color: HexColor('4CA6A8'),
+                          width: 0.5
+                        )
+                      ),
+                      filled: true,
+                      label: Text('Search here', style: GoogleFonts.poppins(
+                        color: Colors.black
+                      )),
+                      suffixIcon: const Icon(Icons.search),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(15.r),
+                      ),
+                    ),
+                  ),
+                ),
+                Obx(() {
+                  if (controller.searchText.isNotEmpty &&
+                      controller.searchResults.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'No results found',
+                        style: GoogleFonts.poppins(
+                          fontSize: 16.sp,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    );
+                  }
+
+                  return controller.searchText.isNotEmpty
+                      ? ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: controller.searchResults.length,
+                          itemBuilder: (context, index) {
+                            var job = controller.searchResults[index];
+                            return RecentJobCard(jobData: job);
+                          },
+                        )
+                      : Column(
+                          children: [
+                            // Recommended Section
+                            if (controller.recommendedJobs.isNotEmpty)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SectionTitle(
+                                    title: 'Recommended for You',
+                                    onShowAllPressed: () {},
+                                  ),
+                                  SizedBox(
+                                    height: 200.h,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount:
+                                          controller.recommendedJobs.length,
+                                      itemBuilder: (context, index) {
+                                        var job =
+                                            controller.recommendedJobs[index];
+                                        return JobCard(jobData: job);
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            SizedBox(height: 20.h),
+
+                            // Recent Jobs Section
+                            SectionTitle(
+                              title: 'Recent Posts',
+                              onShowAllPressed: () {},
+                            ),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: controller.recentJobs.length,
+                              itemBuilder: (context, index) {
+                                var job = controller.recentJobs[index];
+                                return RecentJobCard(jobData: job);
+                              },
+                            ),
+                          ],
+                        );
+                }),
+              ],
+            ),
           ),
         ),
       ),
@@ -308,7 +279,8 @@ class RecentJobCard extends StatelessWidget {
               backgroundColor: Colors.transparent,
               backgroundImage: jobData['photoUrl'].isNotEmpty
                   ? NetworkImage(jobData['photoUrl'])
-                  : const AssetImage('assets/icons/facebook.png') as ImageProvider,
+                  : const AssetImage('assets/icons/facebook.png')
+                      as ImageProvider,
             ),
             SizedBox(width: 12.w),
             Expanded(

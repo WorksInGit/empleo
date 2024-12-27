@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 class SignupController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final user = FirebaseAuth.instance.currentUser;
 
   var nameController = TextEditingController();
   var emailController = TextEditingController();
@@ -81,7 +82,7 @@ class SignupController extends GetxController {
 
     if (formKey.currentState?.validate() ?? false) {
       Get.dialog(
-        Center(child: CircularProgressIndicator()),
+        const Center(child: CircularProgressIndicator()),
         barrierDismissible: false,
       );
 
@@ -91,12 +92,16 @@ class SignupController extends GetxController {
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         );
+        await userCredential.user?.updateProfile(
+          displayName: nameController.text,
+          photoURL: '',
+        );
         print("User created: ${userCredential.user?.uid}");
 
         await _firestore.collection('users').doc(userCredential.user?.uid).set({
           'name': nameController.text.trim(),
           'email': emailController.text.trim(),
-          'uid': userCredential.user?.uid,
+          'uid': '',
           'location': location.value,
           'qualification': qualification.value,
           'experience': experience.value,
@@ -129,10 +134,11 @@ class SignupController extends GetxController {
       await _firestore.collection('users').doc(uid).update({
         'location': location.value,
         'qualification': qualification.value,
+        'uid': user?.uid,
         'experience': experience.value,
         'skills': skills,
         'phone': int.parse(phone.value),
-        'photoUrl': '',
+        'photoUrl': user?.photoURL ?? '',
         'updatedAt': FieldValue.serverTimestamp(),
       });
 

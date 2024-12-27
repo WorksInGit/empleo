@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:empleo/app/common/selection_page.dart';
+import 'package:empleo/app/modules/user/views/about_page.dart';
+import 'package:empleo/app/modules/user/views/user_bottom_nav.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -60,11 +62,17 @@ class AuthService {
             'email': user.email,
             'photoUrl': user.photoURL,
           });
+          Get.offAll(AboutPage(uid: user.uid));
+        } else {
+          Get.offAll(BottomNav());
         }
         await saveLoginState(user.uid);
       }
+
       return user;
     } catch (e) {
+      Get.snackbar('Error', 'An error occurred during Google sign-in: $e',
+          snackPosition: SnackPosition.BOTTOM);
       return null;
     }
   }
@@ -77,7 +85,7 @@ class AuthService {
       }
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', false);
-      Get.offAll(() => SelectionPage());
+      Get.offAll(SelectionPage());
     } catch (e) {
       print("Error during sign-out: $e");
     }

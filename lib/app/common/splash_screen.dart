@@ -10,23 +10,7 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(
-      const Duration(seconds: 1),
-      () async {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-
-        if (isLoggedIn) {
-          Get.offAll(() => BottomNav(),
-              transition: Transition.fade,
-              duration: const Duration(milliseconds: 2000));
-        } else {
-          Get.offAll(() => LandingPage(),
-              transition: Transition.fade,
-              duration: const Duration(milliseconds: 2000));
-        }
-      },
-    );
+    _checkLoginStatus();
 
     return SafeArea(
       child: Scaffold(
@@ -51,5 +35,28 @@ class SplashScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _checkLoginStatus() async {
+    try {
+      await Future.delayed(const Duration(seconds: 1)); 
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+      if (isLoggedIn) {
+        Get.offAll(() => BottomNav(),
+            transition: Transition.fade,
+            duration: const Duration(milliseconds: 1000));
+      } else {
+        Get.offAll(() => LandingPage(),
+            transition: Transition.fade,
+            duration: const Duration(milliseconds: 1000));
+      }
+    } catch (e) {
+      print("Error checking login status: $e");
+      Get.offAll(() => LandingPage(),
+          transition: Transition.fade,
+          duration: const Duration(milliseconds: 1000));
+    }
   }
 }

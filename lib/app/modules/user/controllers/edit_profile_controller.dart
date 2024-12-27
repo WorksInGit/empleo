@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,6 +47,11 @@ class EditProfileController extends GetxController {
   }
 
   void updateProfile(String uid) async {
+    final user = FirebaseAuth.instance.currentUser;
+    await user?.updateProfile(
+      displayName: nameController.text,
+      photoURL: profileImageUrl.value.isEmpty ? null : profileImageUrl.value,
+    );
     final skills =
         skillsController.text.split(',').map((e) => e.trim()).toList();
 

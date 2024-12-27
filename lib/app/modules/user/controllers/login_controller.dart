@@ -22,10 +22,8 @@ class LoginController extends GetxController {
   Future<void> loginWithGoogle() async {
     isLoading.value = true;
     try {
-      final user = await AuthService().signInWithGoogle();
-      if (user != null) {
-        Get.offAll(() => BottomNav());
-      }
+      await AuthService().signInWithGoogle();
+      
     } catch (e) {
       Get.snackbar('Error', e.toString(), snackPosition: SnackPosition.BOTTOM);
     } finally {
