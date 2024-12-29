@@ -33,34 +33,36 @@ class CompanyFaq extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          SizedBox(height: 25.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Company FAQ',
-                style: GoogleFonts.poppins(
-                    fontSize: 20.sp, fontWeight: FontWeight.w500),
-              ),
-            ],
-          ),
-          SizedBox(height: 30.h),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(15.w),
-              child: ListView.builder(
-                itemCount: companyFaqList.length,
-                itemBuilder: (context, index) {
-                  return FAQTile(faq: companyFaqList[index]);
-                },
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Column(
+          children: [
+            SizedBox(height: 25.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Company FAQ',
+                  style: GoogleFonts.poppins(
+                      fontSize: 20.sp, fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+            SizedBox(height: 30.h),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(15.w),
+                child: ListView.builder(
+                  itemCount: companyFaqList.length,
+                  itemBuilder: (context, index) {
+                    return FAQTile(faq: companyFaqList[index]);
+                  },
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

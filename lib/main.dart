@@ -31,6 +31,8 @@ class MyApp extends StatelessWidget {
         title: 'Empleo',
         home: const SplashScreen(),
         getPages: AppPages.routes,
+        defaultTransition: Transition.noTransition,
+        transitionDuration: const Duration(milliseconds: 0),
       ),
     );
   }

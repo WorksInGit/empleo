@@ -36,7 +36,10 @@ class CompanySettings extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Get.to(() => CompanyProfile());
+                        Get.to(() => CompanyProfile(),
+                        transition: Transition.cupertino,
+                        duration: Duration(milliseconds: 500)
+                        );
                       },
                       child: Container(
                         width: 250.w,
@@ -63,11 +66,10 @@ class CompanySettings extends StatelessWidget {
                     SizedBox(height: 20.h),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => FeedbacksPage(),
-                            ));
+                       Get.to(() => FeedbacksPage(),
+                        transition: Transition.cupertino,
+                        duration: Duration(milliseconds: 500)
+                       );
                       },
                       child: Container(
                         width: 250.w,
@@ -94,7 +96,10 @@ class CompanySettings extends StatelessWidget {
                     SizedBox(height: 20.h),
                     GestureDetector(
                       onTap: () {
-                        Get.to(() => CompanyFaq());
+                        Get.to(() => CompanyFaq(),
+                         transition: Transition.cupertino,
+                        duration: Duration(milliseconds: 500)
+                        );
                       },
                       child: Container(
                         width: 250.w,
@@ -121,11 +126,10 @@ class CompanySettings extends StatelessWidget {
                     SizedBox(height: 20.h),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AboutApp(),
-                            ));
+                       Get.to(() => AboutApp(),
+                        transition: Transition.cupertino,
+                        duration: Duration(milliseconds: 500)
+                       );
                       },
                       child: Container(
                         width: 250.w,
@@ -152,7 +156,10 @@ class CompanySettings extends StatelessWidget {
                     SizedBox(height: 20.h),
                     GestureDetector(
                       onTap: () {
-                        Get.to(() => SupportPage());
+                        Get.to(() => SupportPage(),
+                         transition: Transition.cupertino,
+                        duration: Duration(milliseconds: 500)
+                        );
                       },
                       child: Container(
                         width: 250.w,

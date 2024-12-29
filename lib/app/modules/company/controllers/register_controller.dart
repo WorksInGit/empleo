@@ -80,92 +80,94 @@ class RegisterController extends GetxController {
   }
 
   void register() async {
-    if (companyName.value.isEmpty ||
-        email.value.isEmpty ||
-        password.value.isEmpty ||
-        confirmPassword.value.isEmpty ||
-        contactNo.value.isEmpty ||
-        about.value.isEmpty ||
-        industry.value == 'Select your industry' ||
-        location.value.isEmpty) {
-      Get.snackbar(
-        'Error',
-        'All fields are required.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-      return;
-    }
-
-    if (profileImageUrl.value.isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please upload a profile image.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-      return;
-    }
-
-    if (password.value != confirmPassword.value) {
-      Get.snackbar(
-        'Error',
-        'Passwords do not match.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-      return;
-    }
-
-    try {
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: email.value,
-        password: password.value,
-      );
-
-      await _firestore
-          .collection('companies')
-          .doc(userCredential.user!.uid)
-          .set({
-        'companyName': companyName.value,
-        'email': email.value,
-        'contactNo': contactNo.value,
-        'about': about.value,
-        'uid': userCredential.user!.uid,
-        'industry': industry.value,
-        'location': location.value,
-        'photoUrl': profileImageUrl.value,
-        'status': 0
-      });
-      await _firestore.collection('totalCompanies').add({
-        'uid': userCredential.user!.uid,
-        'createdAt': FieldValue.serverTimestamp()
-      });
-
-      Get.defaultDialog(
-        title: "Verification in Progress",
-        middleText: "You will be contacted through mail for further process.",
-        textConfirm: "OK",
-        backgroundColor: Colors.white,
-        titleStyle: GoogleFonts.poppins(fontSize: 18.sp),
-        middleTextStyle: GoogleFonts.poppins(fontSize: 15.sp),
-        buttonColor: HexColor('4CA6A8'),
-        onConfirm: () {
-          Get.offAll(CompanyLogin());
-        },
-      );
-    } catch (e) {
-      Get.snackbar(
-        'Registration Failed',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    }
+  if (companyName.value.isEmpty ||
+      email.value.isEmpty ||
+      password.value.isEmpty ||
+      confirmPassword.value.isEmpty ||
+      contactNo.value.isEmpty ||
+      about.value.isEmpty ||
+      industry.value == 'Select your industry' ||
+      location.value.isEmpty) {
+    Get.snackbar(
+      'Error',
+      'All fields are required.',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+    return;
   }
+
+  if (profileImageUrl.value.isEmpty) {
+    Get.snackbar(
+      'Error',
+      'Please upload a profile image.',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+    return;
+  }
+
+  if (password.value != confirmPassword.value) {
+    Get.snackbar(
+      'Error',
+      'Passwords do not match.',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+    return;
+  }
+
+  try {
+    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      email: email.value,
+      password: password.value,
+    );
+
+    await userCredential.user!.updateProfile(
+      displayName: companyName.value,
+      photoURL: profileImageUrl.value,
+    );
+
+    await _firestore.collection('companies').doc(userCredential.user!.uid).set({
+      'companyName': companyName.value,
+      'email': email.value,
+      'contactNo': contactNo.value,
+      'about': about.value,
+      'uid': userCredential.user!.uid,
+      'industry': industry.value,
+      'location': location.value,
+      'photoUrl': profileImageUrl.value,
+      'status': 0,
+    });
+
+    await _firestore.collection('totalCompanies').add({
+      'uid': userCredential.user!.uid,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
+    Get.defaultDialog(
+      title: "Verification in Progress",
+      middleText: "You will be contacted through mail for further process.",
+      textConfirm: "OK",
+      backgroundColor: Colors.white,
+      titleStyle: GoogleFonts.poppins(fontSize: 18.sp),
+      middleTextStyle: GoogleFonts.poppins(fontSize: 15.sp),
+      buttonColor: HexColor('4CA6A8'),
+      onConfirm: () {
+        Get.offAll(CompanyLogin());
+      },
+    );
+  } catch (e) {
+    Get.snackbar(
+      'Registration Failed',
+      e.toString(),
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+  }
+}
 }

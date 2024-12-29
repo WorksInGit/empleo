@@ -117,7 +117,8 @@ class LoginPageController extends GetxController {
       }
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedInCompany', false);
-      Get.offAll(SelectionPage());
+      Get.offAll(SelectionPage(),
+      );
     } catch (e) {
       print("Error during sign-out: $e");
     }
