@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:empleo/app/common/selection_page.dart';
+import 'package:empleo/app/common/views/selection_page.dart';
 import 'package:empleo/app/modules/user/views/about_page.dart';
 import 'package:empleo/app/modules/user/views/user_bottom_nav.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,10 +12,9 @@ class AuthService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  Future<void> saveLoginState(String uid) async {
+  Future<void> saveLoginState() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', true);
-    await prefs.setString('uid', uid);
+    await prefs.setBool('isLoggedInUser', true);
   }
 
   Future<User?> loginWithEmailAndPassword(String email, String password) async {
@@ -25,7 +24,7 @@ class AuthService {
         email: email,
         password: password,
       );
-      await saveLoginState(userCredential.user!.uid);
+      await saveLoginState();
       return userCredential.user;
     } catch (e) {
       Get.snackbar('Login Failed', e.toString(),
@@ -66,7 +65,7 @@ class AuthService {
         } else {
           Get.offAll(BottomNav());
         }
-        await saveLoginState(user.uid);
+        await saveLoginState();
       }
 
       return user;
@@ -84,7 +83,8 @@ class AuthService {
         await _googleSignIn.signOut();
       }
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isLoggedIn', false);
+      await prefs.setBool('isLoggedInUser', false);
+      await prefs.clear();
       Get.offAll(SelectionPage());
     } catch (e) {
       print("Error during sign-out: $e");

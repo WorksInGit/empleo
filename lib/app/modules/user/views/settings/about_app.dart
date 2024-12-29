@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutApp extends StatelessWidget {
+  final String supportEmail = "zannan.personal@gmail.com"; // email to be clicked
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          appBar: AppBar(
-            title: Text('About', style: GoogleFonts.poppins(),),
-            centerTitle: true,
-            automaticallyImplyLeading: false,
-            backgroundColor: Colors.white,
+        appBar: AppBar(
+            surfaceTintColor: HexColor('4CA6A8'),
+          title: Text(
+            'About',
+            style: GoogleFonts.poppins(),
           ),
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.white,
+        ),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           padding: EdgeInsets.all(16.w),
@@ -71,7 +79,6 @@ class AboutApp extends StatelessWidget {
               BulletPoint(text: "Search for job postings by title."),
               BulletPoint(text: "Easily apply to jobs by filling in your details and uploading your CV."),
               BulletPoint(text: "Track your application progress in the 'Application' section."),
-              BulletPoint(text: "Receive notifications after get hired."),
               SizedBox(height: 20.h),
               Text(
                 "Our Mission:",
@@ -99,15 +106,18 @@ class AboutApp extends StatelessWidget {
                 style: TextStyle(fontSize: 16.sp, color: Colors.grey),
               ),
               SizedBox(height: 5.h),
-              Row(
-                children: [
-                  Icon(Icons.email, color: Colors.teal),
-                  SizedBox(width: 10.w),
-                  Text(
-                    "zannank856@gmail.com",
-                    style: TextStyle(fontSize: 16.sp, color: Colors.teal),
-                  ),
-                ],
+              GestureDetector(
+                onTap: _sendEmail,
+                child: Row(
+                  children: [
+                    Icon(Icons.email, color: Colors.teal),
+                    SizedBox(width: 10.w),
+                    Text(
+                      supportEmail,
+                      style: TextStyle(fontSize: 16.sp, color: Colors.teal),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(height: 5.h),
             ],
@@ -115,6 +125,20 @@ class AboutApp extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  // Function to launch the email client
+  Future<void> _sendEmail() async {
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: supportEmail,
+      query: 'subject=Support Assistance',
+    );
+    if (await canLaunchUrl(emailUri)) {
+      await launchUrl(emailUri);
+    } else {
+      throw 'Could not launch $emailUri';
+    }
   }
 }
 

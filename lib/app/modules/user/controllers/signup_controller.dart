@@ -139,9 +139,12 @@ class SignupController extends GetxController {
         'skills': skills,
         'phone': int.parse(phone.value),
         'photoUrl': user?.photoURL ?? '',
-        'updatedAt': FieldValue.serverTimestamp(),
+        'createdAt': FieldValue.serverTimestamp(),
+        'status': 1
       });
-
+      await _firestore
+          .collection('totalUsers')
+          .add({'uid': uid, 'createdAt': FieldValue.serverTimestamp()});
       Get.snackbar(
         "Successfull",
         ".",

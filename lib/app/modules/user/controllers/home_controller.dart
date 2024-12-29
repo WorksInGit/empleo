@@ -23,6 +23,13 @@ class HomeController extends GetxController {
       _fetchRecommendedJobs();
       _fetchRecentJobs();
     }
+
+    FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user != null) {
+        currentUser.value = user;
+        _fetchUserData();
+      }
+    });
   }
 
   void _fetchUserData() {
@@ -38,12 +45,11 @@ class HomeController extends GetxController {
   void _fetchRecommendedJobs() {
     _firestore
         .collection('jobs')
-        .orderBy('createdAt', descending: true)
+        .where('status', isEqualTo: 1)
         .snapshots()
         .listen((snapshot) {
       var jobs = snapshot.docs;
       String userSkill = _getUserSkill();
-
       var recommended = jobs.where((job) {
         var jobSkills = job['skills'] is List
             ? List<String>.from(
@@ -63,7 +69,7 @@ class HomeController extends GetxController {
   void _fetchRecentJobs() {
     _firestore
         .collection('jobs')
-        .orderBy('createdAt', descending: true)
+        .where('status', isEqualTo: 1)
         .limit(5)
         .snapshots()
         .listen((snapshot) {
@@ -79,24 +85,23 @@ class HomeController extends GetxController {
     return userData.value!['skills'] ?? '';
   }
 
- void searchJobs(String query) {
-  searchText.value = query.trim().toLowerCase();
+  void searchJobs(String query) {
+    searchText.value = query.trim().toLowerCase();
 
-  if (searchText.isEmpty) {
-    searchResults.clear();
-    return;
+    if (searchText.isEmpty) {
+      searchResults.clear();
+      return;
+    }
+
+    _firestore.collection('jobs').
+    where('status', isEqualTo: 1).
+    snapshots().listen((snapshot) {
+      var jobs = snapshot.docs.where((job) {
+        var jobName = job['jobName']?.toString().toLowerCase() ?? '';
+        return jobName.contains(searchText.value);
+      }).toList();
+
+      searchResults.assignAll(jobs);
+    });
   }
-
-  _firestore
-      .collection('jobs')
-      .snapshots()
-      .listen((snapshot) {
-    var jobs = snapshot.docs.where((job) {
-      var jobName = job['jobName']?.toString().toLowerCase() ?? '';
-      return jobName.contains(searchText.value);
-    }).toList();
-
-    searchResults.assignAll(jobs);
-  });
-}
 }

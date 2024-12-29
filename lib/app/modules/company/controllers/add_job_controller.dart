@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AddJobController extends GetxController {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final RxString selectedTiming = "Full-time".obs;
   final RxString selectedMode = "Office".obs;
@@ -65,6 +66,11 @@ class AddJobController extends GetxController {
         'photoUrl': photoUrl,
         'about': about,
         'createdAt': FieldValue.serverTimestamp(),
+        'status': 1
+      });
+       await _firestore.collection('totalJobs').add({
+        'jobId': docRef.id,
+        'createdAt': FieldValue.serverTimestamp()
       });
 
       clearAllControllers();

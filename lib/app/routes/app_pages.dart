@@ -1,14 +1,13 @@
-import 'package:empleo/app/common/landing_page.dart';
-import 'package:empleo/app/common/selection_page.dart';
-import 'package:empleo/app/common/splash_screen.dart';
-import 'package:empleo/app/common/user_feedback.dart';
+import 'package:empleo/app/common/views/landing_page.dart';
+import 'package:empleo/app/common/views/selection_page.dart';
+import 'package:empleo/app/common/views/splash_screen.dart';
+import 'package:empleo/app/common/views/feedbacks_page.dart';
 import 'package:empleo/app/modules/company/views/company_bottom_nav.dart';
 import 'package:empleo/app/modules/company/views/company_login.dart';
 import 'package:empleo/app/modules/company/views/company_register.dart';
 import 'package:empleo/app/modules/company/views/posts/applicant_profile.dart';
 import 'package:empleo/app/modules/company/views/posts/company_applications.dart';
 import 'package:empleo/app/modules/company/views/posts/company_posts.dart';
-import 'package:empleo/app/modules/company/views/verified_page.dart';
 import 'package:empleo/app/modules/user/views/home/job_apply.dart';
 import 'package:empleo/app/modules/user/views/user_bottom_nav.dart';
 import 'package:empleo/app/modules/user/views/user_login.dart';
@@ -60,12 +59,11 @@ class AppPages {
     ),
     GetPage(name: Routes.companyRegister, page: () => CompanyRegister()),
     GetPage(name: Routes.companyRegister, page: () => CompanyRegister()),
-    GetPage(name: Routes.verified, page: () => VerifiedPage()),
     GetPage(name: Routes.companyNav, page: () => CompanyNav()),
     GetPage(name: Routes.companyPosts, page: () => CompanyPosts()),
     GetPage(name: Routes.application, page: () => CompanyApplications()),
     GetPage(name: Routes.applicantProfile, page: () => ApplicantProfile()),
-    GetPage(name: Routes.feedback, page: () => UserFeedback()),
+    GetPage(name: Routes.feedback, page: () => FeedbacksPage()),
     GetPage(
       name: Routes.signUp,
       page: () => UserSignUp(),

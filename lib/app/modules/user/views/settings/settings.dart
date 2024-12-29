@@ -1,4 +1,5 @@
-import 'package:empleo/app/common/user_feedback.dart';
+import 'package:empleo/app/common/views/feedbacks_page.dart';
+import 'package:empleo/app/modules/company/views/settings/support_page.dart';
 import 'package:empleo/app/modules/user/services/auth_service.dart';
 import 'package:empleo/app/modules/user/views/settings/about_app.dart';
 import 'package:empleo/app/modules/user/views/settings/user_faq.dart';
@@ -71,7 +72,7 @@ class SettingsPage extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           Get.to(
-                            () => UserFeedback(),
+                            () => FeedbacksPage(),
                             transition: Transition.cupertino,
                             duration: const Duration(milliseconds: 500),
                           );
@@ -154,6 +155,33 @@ class SettingsPage extends StatelessWidget {
                               SizedBox(width: 10.w),
                               Text(
                                 'About',
+                                style: GoogleFonts.poppins(),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20.h),
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => SupportPage());
+                        },
+                        child: Container(
+                          width: 250.w,
+                          height: 50.h,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15.r)),
+                          child: Row(
+                            children: [
+                              SizedBox(width: 10.w),
+                              Icon(
+                                Iconsax.support5,
+                                size: 40.sp,
+                              ),
+                              SizedBox(width: 10.w),
+                              Text(
+                                'Support and Assistance',
                                 style: GoogleFonts.poppins(),
                               )
                             ],

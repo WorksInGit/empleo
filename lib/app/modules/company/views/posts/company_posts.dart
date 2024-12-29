@@ -197,55 +197,74 @@ class YourPosts extends StatelessWidget {
                             () {
                               if (controller.showText.value) {
                                 return IconButton(
-                                  onPressed: () async {
-                                    try {
-                                      QuerySnapshot applicationsSnapshot =
+                                  onPressed: () {
+                                    Get.defaultDialog(
+                                      title: "Delete Confirmation",
+                                      middleText:
+                                          "Are you sure you want to delete this job post?",
+                                      textConfirm: "Yes",
+                                      textCancel: "No",
+                                      confirmTextColor: Colors.white,
+                                      backgroundColor: Colors.white,
+                                      titleStyle:
+                                          GoogleFonts.poppins(fontSize: 18.sp),
+                                      middleTextStyle:
+                                          GoogleFonts.poppins(fontSize: 15.sp),
+                                      buttonColor: HexColor('4CA6A8'),
+                                      onConfirm: () async {
+                                        try {
+                                          Get.back();
+                                          QuerySnapshot applicationsSnapshot =
+                                              await FirebaseFirestore.instance
+                                                  .collection('jobApplications')
+                                                  .where('jobId',
+                                                      isEqualTo: job.id)
+                                                  .get();
+
+                                          for (var application
+                                              in applicationsSnapshot.docs) {
+                                            await FirebaseFirestore.instance
+                                                .collection('jobApplications')
+                                                .doc(application.id)
+                                                .delete();
+                                          }
+
                                           await FirebaseFirestore.instance
-                                              .collection('jobApplications')
-                                              .where('jobId', isEqualTo: job.id)
-                                              .get();
+                                              .collection('jobs')
+                                              .doc(job.id)
+                                              .delete();
 
-                                      for (var application
-                                          in applicationsSnapshot.docs) {
-                                        await FirebaseFirestore.instance
-                                            .collection('jobApplications')
-                                            .doc(application.id)
-                                            .delete();
-                                      }
-
-                                      await FirebaseFirestore.instance
-                                          .collection('jobs')
-                                          .doc(job.id)
-                                          .delete();
-
-                                      Get.snackbar(
-                                        'Success',
-                                        'Job post deleted successfully.',
-                                        backgroundColor: Colors.transparent,
-                                        colorText: Colors.black,
-                                      );
-
-                                      // Update controller value
-                                      controller.showText.value = false;
-                                    } catch (e) {
-                                      Get.snackbar(
-                                        'Error',
-                                        'Failed to delete job post: $e',
-                                        backgroundColor: Colors.transparent,
-                                        colorText: Colors.red,
-                                      );
-                                    }
+                                          Get.snackbar(
+                                            'Success',
+                                            'Job post deleted successfully.',
+                                            backgroundColor: Colors.transparent,
+                                            colorText: Colors.black,
+                                          );
+                                          controller.showText.value = false;
+                                        } catch (e) {
+                                          Get.snackbar(
+                                            'Error',
+                                            'Failed to delete job post: $e',
+                                            backgroundColor: Colors.transparent,
+                                            colorText: Colors.red,
+                                          );
+                                        }
+                                      },
+                                      onCancel: () {
+                                        Get.back(); // Close the dialog
+                                      },
+                                    );
                                   },
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.delete,
                                     color: Colors.red,
                                   ),
                                 );
                               } else {
-                                return const SizedBox();
+                                return const SizedBox.shrink();
                               }
                             },
-                          ),
+                          )
                         ],
                       ),
                       SizedBox(height: 8.h),

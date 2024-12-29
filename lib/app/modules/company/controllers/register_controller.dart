@@ -1,11 +1,14 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:empleo/app/modules/company/views/verification_waiting.dart';
+import 'package:empleo/app/modules/company/views/company_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 
 class RegisterController extends GetxController {
   var companyName = ''.obs;
@@ -138,8 +141,23 @@ class RegisterController extends GetxController {
         'photoUrl': profileImageUrl.value,
         'status': 0
       });
+      await _firestore.collection('totalCompanies').add({
+        'uid': userCredential.user!.uid,
+        'createdAt': FieldValue.serverTimestamp()
+      });
 
-      Get.to(() => VerificationWaiting());
+      Get.defaultDialog(
+        title: "Verification in Progress",
+        middleText: "You will be contacted through mail for further process.",
+        textConfirm: "OK",
+        backgroundColor: Colors.white,
+        titleStyle: GoogleFonts.poppins(fontSize: 18.sp),
+        middleTextStyle: GoogleFonts.poppins(fontSize: 15.sp),
+        buttonColor: HexColor('4CA6A8'),
+        onConfirm: () {
+          Get.offAll(CompanyLogin());
+        },
+      );
     } catch (e) {
       Get.snackbar(
         'Registration Failed',

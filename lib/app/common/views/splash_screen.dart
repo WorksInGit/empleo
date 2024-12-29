@@ -1,4 +1,5 @@
-import 'package:empleo/app/common/landing_page.dart';
+import 'package:empleo/app/common/views/landing_page.dart';
+import 'package:empleo/app/modules/company/views/company_bottom_nav.dart';
 import 'package:empleo/app/modules/user/views/user_bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -38,25 +39,33 @@ class SplashScreen extends StatelessWidget {
   }
 
   void _checkLoginStatus() async {
-    try {
-      await Future.delayed(const Duration(seconds: 1)); 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+  try {
+    await Future.delayed(const Duration(seconds: 1));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedInUser = prefs.getBool('isLoggedInUser') ?? false;
+    bool isLoggedInCompany = prefs.getBool('isLoggedInCompany') ?? false;
 
-      if (isLoggedIn) {
-        Get.offAll(() => BottomNav(),
-            transition: Transition.fade,
-            duration: const Duration(milliseconds: 1000));
-      } else {
-        Get.offAll(() => LandingPage(),
-            transition: Transition.fade,
-            duration: const Duration(milliseconds: 1000));
-      }
-    } catch (e) {
-      print("Error checking login status: $e");
+    print("isLoggedInUser: $isLoggedInUser");
+    print("isLoggedInCompany: $isLoggedInCompany");
+
+    if (isLoggedInUser) {
+      Get.offAll(() => BottomNav(),
+          transition: Transition.fade,
+          duration: const Duration(milliseconds: 1000));
+    } else if (isLoggedInCompany) {
+      Get.offAll(() => CompanyNav(),
+          transition: Transition.fade,
+          duration: const Duration(milliseconds: 1000));
+    } else {
       Get.offAll(() => LandingPage(),
           transition: Transition.fade,
           duration: const Duration(milliseconds: 1000));
     }
+  } catch (e) {
+    print("Error checking login status: $e");
+    Get.offAll(() => LandingPage(),
+        transition: Transition.fade,
+        duration: const Duration(milliseconds: 1000));
   }
+}
 }

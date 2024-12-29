@@ -8,7 +8,8 @@ class LoginController extends GetxController {
   Future<void> login(String email, String password) async {
     isLoading.value = true;
     try {
-      final user = await AuthService().loginWithEmailAndPassword(email, password);
+      final user =
+          await AuthService().loginWithEmailAndPassword(email, password);
       if (user != null) {
         Get.offAll(() => BottomNav());
       }
@@ -23,7 +24,6 @@ class LoginController extends GetxController {
     isLoading.value = true;
     try {
       await AuthService().signInWithGoogle();
-      
     } catch (e) {
       Get.snackbar('Error', e.toString(), snackPosition: SnackPosition.BOTTOM);
     } finally {

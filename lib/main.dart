@@ -1,4 +1,4 @@
-import 'package:empleo/app/common/splash_screen.dart';
+import 'package:empleo/app/common/views/splash_screen.dart';
 import 'package:empleo/app/routes/app_pages.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

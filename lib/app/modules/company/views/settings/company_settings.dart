@@ -1,17 +1,18 @@
-import 'package:empleo/app/common/user_feedback.dart';
+import 'package:empleo/app/common/views/feedbacks_page.dart';
+import 'package:empleo/app/modules/company/controllers/login_controller.dart';
 import 'package:empleo/app/modules/company/views/settings/company_faq.dart';
 import 'package:empleo/app/modules/company/views/settings/company_profile.dart';
-import 'package:empleo/app/modules/company/views/settings/company_support.dart';
+import 'package:empleo/app/modules/company/views/settings/support_page.dart';
 import 'package:empleo/app/modules/user/views/settings/about_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 
 class CompanySettings extends StatelessWidget {
-  const CompanySettings({super.key});
-
+  CompanySettings({super.key});
+  final LoginPageController controller = Get.put(LoginPageController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +66,7 @@ class CompanySettings extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => UserFeedback(),
+                              builder: (context) => FeedbacksPage(),
                             ));
                       },
                       child: Container(
@@ -151,7 +152,7 @@ class CompanySettings extends StatelessWidget {
                     SizedBox(height: 20.h),
                     GestureDetector(
                       onTap: () {
-                        Get.to(() => CompanySupport());
+                        Get.to(() => SupportPage());
                       },
                       child: Container(
                         width: 250.w,
@@ -176,25 +177,28 @@ class CompanySettings extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 20.h),
-                    Container(
-                      width: 250.w,
-                      height: 50.h,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15.r)),
-                      child: Row(
-                        children: [
-                          SizedBox(width: 10.w),
-                          Icon(
-                            Iconsax.logout5,
-                            size: 40.sp,
-                          ),
-                          SizedBox(width: 10.w),
-                          Text(
-                            'LogOut',
-                            style: GoogleFonts.poppins(),
-                          )
-                        ],
+                    GestureDetector(
+                      onTap: () => controller.logOut(),
+                      child: Container(
+                        width: 250.w,
+                        height: 50.h,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15.r)),
+                        child: Row(
+                          children: [
+                            SizedBox(width: 10.w),
+                            Icon(
+                              Iconsax.logout5,
+                              size: 40.sp,
+                            ),
+                            SizedBox(width: 10.w),
+                            Text(
+                              'LogOut',
+                              style: GoogleFonts.poppins(),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ],
